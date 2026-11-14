@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#050711"></rect><circle cx="50" cy="50" r="20" fill="none" stroke="#35B8FF"></circle><circle cx="50" cy="50" r="9" fill="#FF7138"></circle></svg></template>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#050711"></rect><circle cx="50" cy="50" r="20" fill="none" stroke="#35B8FF"></circle><circle cx="50" cy="50" r="9" fill="#FF7138"></circle></svg></template>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+html,body{margin:0;background:#050711;color:#F5F7FF;font-family:'Geist',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#F5F7FF;text-decoration:none}
+a:hover{color:#35B8FF}
+::selection{background:rgba(108,99,255,.45)}
+input,select,button{font-family:inherit}
+input::placeholder{color:#6B7390}
+select option{background:#0A1020;color:#F5F7FF}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</helmet>
+<div style="position:relative;min-height:100vh;overflow-x:hidden">
+<div style="position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 15% 5%,rgba(108,99,255,0.13),transparent 70%),radial-gradient(ellipse 50% 40% at 90% 25%,rgba(53,184,255,0.08),transparent 70%),radial-gradient(ellipse 40% 30% at 70% 95%,rgba(255,113,56,0.06),transparent 70%),#050711"></div>
+<canvas data-fl-scene="1" ref="{{ canvasRef }}" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;display:block"></canvas>
+<div style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 120% 90% at 50% 40%,transparent 55%,rgba(3,4,10,0.75) 100%)"></div>
+
+<header style="position:fixed;top:14px;left:0;right:0;z-index:60;display:flex;justify-content:center;padding:0 16px;pointer-events:none">
+  <nav style="pointer-events:auto;width:100%;max-width:1240px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 8px 8px 18px;border-radius:999px;background:{{ navBg }};backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid {{ navBorder }};transition:background .4s ease,border-color .4s ease">
+    <a href="#/" aria-label="FlameLens home" style="display:flex;align-items:center;gap:10px;color:#F5F7FF">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12.5" stroke="rgba(245,247,255,0.28)"></circle><ellipse cx="14" cy="14" rx="12.5" ry="4.2" transform="rotate(-28 14 14)" stroke="#6C63FF"></ellipse><circle cx="14" cy="14" r="7" stroke="#35B8FF" opacity="0.55"></circle><circle cx="14" cy="14" r="3.6" fill="#FF7138"></circle></svg>
+      <span style="font-size:17px;font-weight:500;letter-spacing:-0.02em">FlameLens</span>
+    </a>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.05)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+          <a href="{{ n.href }}" aria-current="{{ n.aria }}" style="position:relative;padding:8px 16px;border-radius:999px;font-size:14px;color:{{ n.color }};background:{{ n.bg }};box-shadow:{{ n.shadow }};transition:background .35s ease,color .35s ease" style-hover="color:#F5F7FF">{{ n.label }}</a>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button onClick="{{ openSearch }}" aria-label="Search research" style="width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid transparent;color:#C7CCE0;cursor:pointer;transition:all .25s" style-hover="background:rgba(255,255,255,0.06);color:#F5F7FF">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.8;stroke-linecap:round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+      </button>
+      <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+        <a href="#/library" style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;background:#F5F7FF;color:#0A1020;font-size:14px;font-weight:500;transition:all .25s" style-hover="background:#ffffff;color:#0A1020;box-shadow:0 0 28px rgba(108,99,255,0.45)">Explore Research
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:2;stroke-linecap:round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg>
+        </a>
+      </sc-if>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuOpen }}" style="width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:#F5F7FF;cursor:pointer">
+          <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.8;stroke-linecap:round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+          </sc-if>
+          <sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.8;stroke-linecap:round"><line x1="4" y1="8" x2="20" y2="8"></line><line x1="4" y1="16" x2="20" y2="16"></line></svg>
+          </sc-if>
+        </button>
+      </sc-if>
+    </div>
+  </nav>
+</header>
+
+<sc-if value="{{ showMobileMenu }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;top:76px;left:16px;right:16px;z-index:59;padding:10px;border-radius:24px;background:rgba(8,12,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(160,176,255,0.14);display:flex;flex-direction:column;gap:2px">
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+      <a href="{{ n.href }}" style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-radius:16px;font-size:18px;color:{{ n.color }};background:{{ n.bg }}">{{ n.label }}<span style="font-family:'Geist Mono',monospace;font-size:11px;color:#6B7390">{{ n.num }}</span></a>
+    </sc-for>
+    <a href="#/library" style="margin-top:6px;padding:16px;border-radius:16px;background:#F5F7FF;color:#0A1020;text-align:center;font-weight:500">Explore Research</a>
+  </div>
+</sc-if>
+
+<main ref="{{ mainRef }}" style="position:relative;z-index:1">
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+  <section data-screen-label="Home" style="position:relative;min-height:100vh;display:flex;align-items:center;padding:120px 24px 110px;box-sizing:border-box">
+    <div style="width:100%;max-width:1240px;margin:0 auto">
+      <div style="max-width:660px;display:flex;flex-direction:column;gap:26px">
+        <div style="display:flex;align-items:center;gap:12px;font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#FF9461">
+          <span style="width:6px;height:6px;border-radius:50%;background:#FF7138;box-shadow:0 0 12px #FF7138"></span>ADVANCED SPACE FIRE SAFETY RESEARCH
+        </div>
+        <h1 style="margin:0;font-size:clamp(48px,7.4vw,108px);line-height:0.96;letter-spacing:-0.045em;font-weight:500;text-wrap:balance">Understanding Fire.<br><span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:-0.02em;color:#C9CBFF">Protecting the Future.</span></h1>
+        <p style="margin:0;font-size:clamp(18px,1.6vw,22px);line-height:1.4;color:#F5F7FF;font-weight:400">AI-Powered Fire Safety Research for Space Missions</p>
+        <p style="margin:0;font-size:16.5px;line-height:1.65;color:#929BB2;max-width:520px;text-wrap:pretty">Exploring combustion behavior, fire dynamics, and spacecraft safety through scientific research, experimental data, and artificial intelligence.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+          <a href="#/library" style="display:flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;background:#6C63FF;color:#ffffff;font-size:15px;font-weight:500;box-shadow:0 0 0 1px rgba(255,255,255,0.12) inset,0 10px 40px -10px rgba(108,99,255,0.8);transition:all .3s" style-hover="background:#7C74FF;color:#ffffff;box-shadow:0 0 0 1px rgba(255,255,255,0.2) inset,0 12px 50px -8px rgba(108,99,255,0.95)">Explore Research
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:2;stroke-linecap:round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="13 6 19 12 13 18"></polyline></svg>
+          </a>
+          <a href="#/experiments" style="display:flex;align-items:center;gap:10px;padding:15px 24px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.14);color:#F5F7FF;font-size:15px;backdrop-filter:blur(10px);transition:all .3s" style-hover="background:rgba(255,255,255,0.09);color:#F5F7FF;border-color:rgba(255,255,255,0.28)">Discover Experiments</a>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{ showHud }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;right:max(24px,calc((100vw - 1240px)/2));bottom:118px;max-width:260px;display:flex;flex-direction:column;gap:6px;font-family:'Geist Mono',monospace;font-size:11px;line-height:1.55;color:#7E88A3;border-left:1px solid rgba(53,184,255,0.35);padding-left:12px">
+        <span style="color:#35B8FF;letter-spacing:0.12em">FIG. 01</span>
+        <span>Earth from orbit. Markers: Apollo 1 fire, LC-34 Cape Canaveral (1967) · ISS and Mir orbits, 51.6° (Mir cabin fire, 1997). Orbit altitudes exaggerated.</span>
+      </div>
+    </sc-if>
+    <a href="#stats" onClick="{{ scrollToStats }}" style="position:absolute;left:50%;bottom:32px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:10px;color:#7E88A3;font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:0.28em">SCROLL
+      <span style="position:relative;width:1px;height:38px;background:rgba(255,255,255,0.12);overflow:hidden"><span ref="{{ scrollDotRef }}" style="position:absolute;left:0;top:0;width:1px;height:12px;background:#35B8FF"></span></span>
+    </a>
+  </section>
+
+  <section id="stats" data-reveal="1" style="padding:40px 24px 30px">
+    <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px">
+        <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#929BB2">01 — LIBRARY INDEX</span>
+        <span style="font-size:13px;color:#6B7390">Live counts from the research database.</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));border-radius:24px;background:rgba(10,16,32,0.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.12);overflow:hidden">
+        <sc-for list="{{ stats }}" as="s" hint-placeholder-count="4">
+          <div style="padding:30px 28px;display:flex;flex-direction:column;gap:12px;border-right:1px solid rgba(160,176,255,0.08);border-bottom:1px solid rgba(160,176,255,0.08);margin:0 -1px -1px 0">
+            <div style="display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#7E88A3"><span style="width:5px;height:5px;border-radius:50%;background:{{ s.color }}"></span>{{ s.code }}</div>
+            <div style="font-size:clamp(44px,4.6vw,64px);font-weight:400;letter-spacing:-0.04em;line-height:1;font-variant-numeric:tabular-nums">{{ s.value }}</div>
+            <div style="font-size:15px;color:#F5F7FF">{{ s.label }}</div>
+            <div style="font-size:13px;color:#7E88A3;line-height:1.5">{{ s.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section data-reveal="1" style="padding:90px 24px 40px">
+    <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:32px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#929BB2">02 — FEATURED RESEARCH</span>
+          <h2 style="margin:0;font-size:clamp(34px,4vw,54px);font-weight:500;letter-spacing:-0.035em;line-height:1.02;max-width:640px">Findings from flames that <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400">never rise.</span></h2>
+        </div>
+        <a href="#/library" style="display:flex;align-items:center;gap:8px;font-size:14px;color:#C7CCE0;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.2)">View full library →</a>
+      </div>
+      <sc-if value="{{ dataLoading }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:{{ featCols }};gap:18px">
+          <div style="min-height:380px;box-sizing:border-box;padding:34px;border-radius:24px;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.1);display:flex;flex-direction:column;gap:18px">
+            <div data-skel="1" style="width:30%;height:10px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:85%;height:30px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:60%;height:30px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:92%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:70%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div style="flex:1;padding:26px;border-radius:24px;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.1);display:flex;flex-direction:column;gap:14px"><div data-skel="1" style="width:35%;height:10px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:90%;height:18px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:75%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div></div>
+            <div style="flex:1;padding:26px;border-radius:24px;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.1);display:flex;flex-direction:column;gap:14px"><div data-skel="1" style="width:35%;height:10px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:90%;height:18px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:75%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ featEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:64px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);background:rgba(10,16,32,0.35);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+  <div style="width:56px;height:56px;border-radius:50%;border:1px solid rgba(53,184,255,0.4);display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#35B8FF;box-shadow:0 0 18px #35B8FF"></span></div>
+  <h3 style="margin:0;font-size:22px;font-weight:500">No featured research yet</h3>
+  <p style="margin:0;font-size:15px;color:#929BB2;max-width:440px;line-height:1.6">Featured papers will appear here once they are published to the research library.</p><button onClick="{{ reload }}" style="margin-top:6px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.16);color:#F5F7FF;font-size:14px;cursor:pointer">Retry loading</button>
+</div>
+      </sc-if>
+      <sc-if value="{{ hasFeat }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:{{ featCols }};gap:18px">
+        <article style="position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:28px;padding:34px;border-radius:24px;background:linear-gradient(160deg,rgba(108,99,255,0.14),rgba(10,16,32,0.55) 55%);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.16);transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .4s;min-height:380px" style-hover="transform:translateY(-4px);border-color:rgba(108,99,255,0.45);box-shadow:0 30px 70px -30px rgba(108,99,255,0.55)">
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:'Geist Mono',monospace;font-size:12px;color:#929BB2">
+              <span style="display:flex;align-items:center;gap:8px;color:{{ featMain.catColor }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ featMain.catColor }}"></span>{{ featMain.catName }}</span>
+              <span>{{ featMain.year }}</span>
+            </div>
+            <h3 style="margin:0;font-size:clamp(26px,2.6vw,36px);font-weight:500;letter-spacing:-0.03em;line-height:1.1;text-wrap:balance">{{ featMain.title }}</h3>
+            <p style="margin:0;font-size:16px;line-height:1.65;color:#A9B0C6;max-width:560px;text-wrap:pretty">{{ featMain.abstract }}</p>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
+            <div style="display:flex;flex-direction:column;gap:4px;font-size:13px;color:#929BB2"><span style="color:#F5F7FF">{{ featMain.authorsShort }}</span><span style="font-style:italic">{{ featMain.venue }}</span></div>
+            <a href="{{ featMain.href }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;background:#F5F7FF;color:#0A1020;font-size:14px;font-weight:500" style-hover="color:#0A1020;background:#ffffff">Read Research ↗</a>
+          </div>
+        </article>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <sc-for list="{{ featRest }}" as="p" hint-placeholder-count="2">
+            <article style="flex:1;display:flex;flex-direction:column;gap:14px;padding:26px;border-radius:24px;background:rgba(10,16,32,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.12);transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .4s" style-hover="transform:translateY(-4px);border-color:rgba(53,184,255,0.4);box-shadow:0 24px 60px -30px rgba(53,184,255,0.5)">
+              <div style="display:flex;justify-content:space-between;gap:12px;font-family:'Geist Mono',monospace;font-size:12px;color:#929BB2">
+                <span style="display:flex;align-items:center;gap:8px;color:{{ p.catColor }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ p.catColor }}"></span>{{ p.catName }}</span><span>{{ p.year }}</span>
+              </div>
+              <h3 style="margin:0;font-size:20px;font-weight:500;letter-spacing:-0.02em;line-height:1.25;text-wrap:balance">{{ p.title }}</h3>
+              <p style="margin:0;font-size:14.5px;line-height:1.6;color:#929BB2;text-wrap:pretty">{{ p.abstract }}</p>
+              <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px">
+                <span style="color:#7E88A3;font-style:italic">{{ p.venue }}</span>
+                <a href="{{ p.href }}" target="_blank" rel="noopener" style="color:#35B8FF" style-hover="color:#8FD6FF">Read Research ↗</a>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Research Library" style="padding:150px 24px 60px">
+    <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:36px">
+      <div data-reveal="1" style="display:flex;flex-direction:column;gap:20px;max-width:820px">
+        <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#35B8FF">RESEARCH LIBRARY · {{ paperCount }} CURATED PAPERS</span>
+        <h1 style="margin:0;font-size:clamp(46px,6.4vw,92px);font-weight:500;letter-spacing:-0.045em;line-height:0.98">Research Library</h1>
+        <p style="margin:0;font-size:18px;line-height:1.6;color:#929BB2;max-width:560px">Explore scientific discoveries shaping the future of fire safety in space.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <label style="display:flex;align-items:center;gap:14px;padding:8px 8px 8px 22px;border-radius:20px;background:rgba(10,16,32,0.65);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid {{ searchBorder }};box-shadow:{{ searchShadow }};transition:all .3s">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#929BB2" style="stroke-width:1.8;stroke-linecap:round;flex-shrink:0"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+          <input ref="{{ searchRef }}" value="{{ q }}" onChange="{{ onQ }}" onFocus="{{ onFocus }}" onBlur="{{ onBlur }}" placeholder="Search titles, keywords, topics, authors…" aria-label="Search research" style="flex:1;min-width:0;height:52px;background:transparent;border:none;outline:none;color:#F5F7FF;font-size:17px">
+          <sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ clearQ }}" style="padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:none;color:#C7CCE0;font-size:13px;cursor:pointer">Clear</button>
+          </sc-if>
+          <span style="padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);font-family:'Geist Mono',monospace;font-size:12px;color:#6B7390">/</span>
+        </label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="7">
+            <button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:{{ c.bg }};border:1px solid {{ c.border }};color:{{ c.color }};font-size:13.5px;cursor:pointer;transition:all .25s" style-hover="border-color:rgba(255,255,255,0.3)">
+              <span style="width:6px;height:6px;border-radius:50%;background:{{ c.dot }}"></span>{{ c.label }}<span style="font-family:'Geist Mono',monospace;font-size:11px;color:#6B7390">{{ c.count }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;padding-top:4px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <select value="{{ year }}" onChange="{{ onYear }}" aria-label="Filter by publication year" style="height:40px;padding:0 14px;border-radius:12px;background:rgba(10,16,32,0.7);border:1px solid rgba(160,176,255,0.14);color:#F5F7FF;font-size:13.5px;cursor:pointer;outline:none">
+              <sc-for list="{{ yearOpts }}" as="y" hint-placeholder-count="1"><option value="{{ y.v }}">{{ y.label }}</option></sc-for>
+            </select>
+            <div style="display:flex;padding:3px;border-radius:12px;background:rgba(10,16,32,0.7);border:1px solid rgba(160,176,255,0.14)">
+              <sc-for list="{{ sortOpts }}" as="o" hint-placeholder-count="2">
+                <button onClick="{{ o.onClick }}" style="height:32px;padding:0 14px;border-radius:9px;border:none;background:{{ o.bg }};color:{{ o.color }};font-size:13px;cursor:pointer;transition:all .25s">{{ o.label }}</button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ clearFilters }}" style="height:40px;padding:0 14px;border-radius:12px;background:transparent;border:1px dashed rgba(255,113,56,0.45);color:#FF9461;font-size:13px;cursor:pointer">Clear filters ×</button>
+            </sc-if>
+          </div>
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;color:#7E88A3">{{ resultLabel }}</span>
+        </div>
+      </div>
+
+      <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:18px">
+          <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="3">
+            <div data-skel="1" style="height:300px;border-radius:22px;background:linear-gradient(100deg,rgba(255,255,255,0.025) 30%,rgba(255,255,255,0.06) 50%,rgba(255,255,255,0.025) 70%);background-size:200% 100%;border:1px solid rgba(160,176,255,0.08);padding:26px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px">
+              <div style="width:40%;height:10px;border-radius:5px;background:rgba(255,255,255,0.06)"></div>
+              <div style="width:90%;height:18px;border-radius:6px;background:rgba(255,255,255,0.07)"></div>
+              <div style="width:70%;height:18px;border-radius:6px;background:rgba(255,255,255,0.07)"></div>
+              <div style="width:100%;height:60px;border-radius:6px;background:rgba(255,255,255,0.04)"></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showResults }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:18px">
+          <sc-for list="{{ results }}" as="p" hint-placeholder-count="6">
+            <article style="display:flex;flex-direction:column;gap:14px;padding:26px;border-radius:22px;background:rgba(10,16,32,0.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.12);transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s,box-shadow .4s" style-hover="transform:translateY(-4px);border-color:rgba(108,99,255,0.4);box-shadow:0 24px 60px -30px rgba(108,99,255,0.55)">
+              <div style="display:flex;justify-content:space-between;gap:12px;font-family:'Geist Mono',monospace;font-size:12px;color:#929BB2">
+                <span style="display:flex;align-items:center;gap:8px;color:{{ p.catColor }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ p.catColor }}"></span>{{ p.catName }}</span><span>{{ p.year }}</span>
+              </div>
+              <h3 style="margin:0;font-size:20px;font-weight:500;letter-spacing:-0.02em;line-height:1.25;text-wrap:balance">{{ p.title }}</h3>
+              <div style="font-size:13px;line-height:1.5;color:#C7CCE0">{{ p.authors }}</div>
+              <p style="margin:0;font-size:14.5px;line-height:1.6;color:#929BB2;text-wrap:pretty">{{ p.abstract }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ p.tags }}" as="t" hint-placeholder-count="3"><span style="padding:4px 9px;border-radius:999px;background:rgba(255,255,255,0.04);font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3">{{ t }}</span></sc-for>
+              </div>
+              <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+                <div style="display:flex;flex-direction:column;gap:3px;font-size:12.5px;color:#7E88A3"><span style="font-style:italic">{{ p.venue }}</span><span style="font-family:'Geist Mono',monospace;font-size:11px">Published {{ p.year }}</span></div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <sc-if value="{{ p.hasExp }}" hint-placeholder-val="{{ false }}">
+                    <button onClick="{{ p.openExp }}" style="padding:8px 12px;border-radius:999px;background:rgba(255,113,56,0.1);border:1px solid rgba(255,113,56,0.3);color:#FF9461;font-family:'Geist Mono',monospace;font-size:11px;cursor:pointer">{{ p.expCode }}</button>
+                  </sc-if>
+                  <a href="{{ p.href }}" target="_blank" rel="noopener" style="padding:8px 14px;border-radius:999px;background:#F5F7FF;color:#0A1020;font-size:13px;font-weight:500" style-hover="color:#0A1020;background:#fff">View Paper ↗</a>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:70px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+          <div style="width:56px;height:56px;border-radius:50%;border:1px solid rgba(53,184,255,0.4);display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#35B8FF;box-shadow:0 0 18px #35B8FF"></span></div>
+          <h3 style="margin:0;font-size:22px;font-weight:500">No papers match that search</h3>
+          <p style="margin:0;font-size:15px;color:#929BB2;max-width:420px;line-height:1.6">Try broader terms like “flame spread” or “droplet”, or remove a filter.</p>
+          <button onClick="{{ clearFilters }}" style="margin-top:6px;padding:11px 20px;border-radius:999px;background:#F5F7FF;color:#0A1020;border:none;font-size:14px;font-weight:500;cursor:pointer">Clear search & filters</button>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ libNoData }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:64px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);background:rgba(10,16,32,0.35);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+  <div style="width:56px;height:56px;border-radius:50%;border:1px solid rgba(53,184,255,0.4);display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#35B8FF;box-shadow:0 0 18px #35B8FF"></span></div>
+  <h3 style="margin:0;font-size:22px;font-weight:500">The library is empty</h3>
+  <p style="margin:0;font-size:15px;color:#929BB2;max-width:440px;line-height:1.6">Papers will appear here as soon as they are added to the research database.</p><button onClick="{{ reload }}" style="margin-top:6px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.16);color:#F5F7FF;font-size:14px;cursor:pointer">Retry loading</button>
+</div>
+      </sc-if>
+
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:center"><button onClick="{{ loadMore }}" style="padding:13px 26px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.16);color:#F5F7FF;font-size:14px;cursor:pointer" style-hover="background:rgba(255,255,255,0.09)">Load more · {{ remaining }} remaining</button></div>
+      </sc-if>
+
+      <p style="margin:0;font-size:12.5px;line-height:1.6;color:#6B7390;max-width:720px">Summaries are written by FlameLens editors. Always verify against the original publication before citing.</p>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isExperiments }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Experiments" style="padding:150px 24px 60px">
+    <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:44px">
+      <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#FF9461">EXPERIMENTS · {{ expCountLabel }} PROGRAMS IN ORBIT</span>
+          <h1 style="margin:0;font-size:clamp(46px,6.4vw,92px);font-weight:500;letter-spacing:-0.045em;line-height:0.98">Experiments</h1>
+        </div>
+        <p style="margin:0;font-size:17px;line-height:1.65;color:#929BB2;max-width:500px">Space-based research programs that study how fire ignites, spreads and goes out where there is no “up”.</p>
+      </div>
+      <sc-if value="{{ dataLoading }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:18px">
+          <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;gap:20px;padding:14px 14px 24px;border-radius:26px;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.1)">
+              <div data-skel="1" style="aspect-ratio:16/10;border-radius:16px;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.03) 0 1px,transparent 1px 11px),#070b18;border:1px solid rgba(255,255,255,0.05)"></div>
+              <div style="padding:0 12px;display:flex;flex-direction:column;gap:12px"><div data-skel="1" style="width:35%;height:28px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:60%;height:10px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:88%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:70%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ expsEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:64px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);background:rgba(10,16,32,0.35);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+  <div style="width:56px;height:56px;border-radius:50%;border:1px solid rgba(53,184,255,0.4);display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#35B8FF;box-shadow:0 0 18px #35B8FF"></span></div>
+  <h3 style="margin:0;font-size:22px;font-weight:500">No experiments published yet</h3>
+  <p style="margin:0;font-size:15px;color:#929BB2;max-width:440px;line-height:1.6">Experiment programs will appear here once they are added to the research database.</p><button onClick="{{ reload }}" style="margin-top:6px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.16);color:#F5F7FF;font-size:14px;cursor:pointer">Retry loading</button>
+</div>
+      </sc-if>
+      <sc-if value="{{ hasExps }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr));gap:18px">
+        <sc-for list="{{ exps }}" as="e" hint-placeholder-count="6">
+          <article onClick="{{ e.open }}" style="cursor:pointer;display:flex;flex-direction:column;gap:20px;padding:14px 14px 24px;border-radius:26px;background:rgba(10,16,32,0.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.12);transition:transform .45s cubic-bezier(.2,.7,.2,1),border-color .45s,box-shadow .45s" style-hover="transform:translateY(-6px);border-color:rgba(255,255,255,0.22);box-shadow:0 30px 70px -34px rgba(108,99,255,0.6)">
+            <div style="position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 11px),#070b18;border:1px solid rgba(255,255,255,0.06)">
+              <div style="position:absolute;inset:0;background:{{ e.glow }}"></div>
+              <span style="position:absolute;top:14px;left:16px;font-family:'Geist Mono',monospace;font-size:11px;color:#C7CCE0;letter-spacing:0.12em">{{ e.index }}</span>
+              <span style="position:absolute;top:14px;right:16px;font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3">{{ e.platformShort }}</span>
+              <span style="position:absolute;left:16px;right:16px;bottom:14px;font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3;line-height:1.5">[ image: {{ e.image }} ]</span>
+            </div>
+            <div style="padding:0 12px;display:flex;flex-direction:column;gap:12px;flex:1">
+              <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                <h3 style="margin:0;font-size:34px;font-weight:500;letter-spacing:-0.04em">{{ e.code }}</h3>
+                <span style="font-size:14px;color:#929BB2">{{ e.name }}</span>
+              </div>
+              <div style="font-family:'Geist Mono',monospace;font-size:11.5px;color:{{ e.hue }};letter-spacing:0.04em">{{ e.period }}</div>
+              <p style="margin:0;font-size:14.5px;line-height:1.6;color:#C7CCE0;text-wrap:pretty"><span style="color:#7E88A3">Objective — </span>{{ e.objective }}</p>
+              <p style="margin:0;font-size:14px;line-height:1.6;color:#929BB2;text-wrap:pretty">{{ e.desc }}</p>
+              <div style="margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:8px;font-size:14px;color:#F5F7FF">Learn more <span style="color:{{ e.hue }}">→</span></div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+      </sc-if>
+    </div>
+  </section>
+</sc-if>
+
+<sc-if value="{{ isInsights }}" hint-placeholder-val="{{ false }}">
+  <section data-screen-label="Insights" style="padding:150px 24px 60px">
+    <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:40px">
+      <div data-reveal="1" style="display:flex;flex-direction:column;gap:20px;max-width:820px">
+        <span style="font-family:'Geist Mono',monospace;font-size:12px;letter-spacing:0.16em;color:#A9A3FF">INSIGHTS · EDITORIAL</span>
+        <h1 style="margin:0;font-size:clamp(46px,6.4vw,92px);font-weight:500;letter-spacing:-0.045em;line-height:0.98">Scientific <span style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400">Insights</span></h1>
+        <p style="margin:0;font-size:18px;line-height:1.6;color:#929BB2;max-width:600px">Discover what space-based combustion research reveals about fire safety beyond Earth.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:1px;border-radius:18px;overflow:hidden;border:1px solid rgba(160,176,255,0.12);background:rgba(160,176,255,0.1)">
+        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="3">
+          <div style="padding:18px 20px;background:rgba(8,12,26,0.85);display:flex;flex-direction:column;gap:8px">
+            <span style="align-self:flex-start;padding:4px 10px;border-radius:999px;background:{{ l.bg }};color:{{ l.color }};font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.06em">{{ l.label }}</span>
+            <span style="font-size:13.5px;line-height:1.55;color:#929BB2">{{ l.desc }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <sc-if value="{{ dataLoading }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));border-radius:28px;overflow:hidden;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.12)">
+          <div style="padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;gap:18px"><div data-skel="1" style="width:45%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:90%;height:34px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:65%;height:34px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:94%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:80%;height:12px;border-radius:6px;background:rgba(255,255,255,0.07)"></div></div>
+          <div data-skel="1" style="min-height:320px;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.03) 0 1px,transparent 1px 11px),#060a16"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ insNoData }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:64px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);background:rgba(10,16,32,0.35);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+  <div style="width:56px;height:56px;border-radius:50%;border:1px solid rgba(53,184,255,0.4);display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:#35B8FF;box-shadow:0 0 18px #35B8FF"></span></div>
+  <h3 style="margin:0;font-size:22px;font-weight:500">No insights published yet</h3>
+  <p style="margin:0;font-size:15px;color:#929BB2;max-width:440px;line-height:1.6">Findings, hypotheses and AI interpretations will appear here once they are added to the research database.</p><button onClick="{{ reload }}" style="margin-top:6px;padding:11px 20px;border-radius:999px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.16);color:#F5F7FF;font-size:14px;cursor:pointer">Retry loading</button>
+</div>
+      </sc-if>
+      <sc-if value="{{ hasFeatIns }}" hint-placeholder-val="{{ false }}">
+      <article data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:0;border-radius:28px;overflow:hidden;background:linear-gradient(135deg,rgba(53,184,255,0.1),rgba(10,16,32,0.6) 60%);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(53,184,255,0.22)">
+        <div style="padding:clamp(28px,4vw,48px);display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <span style="padding:5px 11px;border-radius:999px;background:rgba(53,184,255,0.14);color:#35B8FF;font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.06em">HIGHLIGHTED · ESTABLISHED FINDING</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3">{{ feat.catName }}</span>
+          </div>
+          <h2 style="margin:0;font-size:clamp(30px,3.4vw,46px);font-weight:500;letter-spacing:-0.035em;line-height:1.05;text-wrap:balance">{{ feat.title }}</h2>
+          <p style="margin:0;font-size:16.5px;line-height:1.7;color:#B5BBD0;text-wrap:pretty">{{ feat.text }}</p>
+          <div style="display:flex;flex-direction:column;gap:12px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08)">
+            <a href="{{ feat.refHref }}" target="_blank" rel="noopener" style="font-size:13.5px;line-height:1.5;color:#C7CCE0" style-hover="color:#35B8FF"><span style="font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3">SOURCE&nbsp;&nbsp;</span>{{ feat.refLabel }} ↗</a>
+            <button onClick="{{ feat.openExp }}" style="align-self:flex-start;padding:9px 14px;border-radius:999px;background:rgba(255,113,56,0.1);border:1px solid rgba(255,113,56,0.3);color:#FF9461;font-size:13px;cursor:pointer">Related experiment · {{ feat.expCode }} →</button>
+          </div>
+        </div>
+        <div style="position:relative;min-height:320px;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.03) 0 1px,transparent 1px 11px),#060a16;border-left:1px solid rgba(255,255,255,0.06)">
+          <div style="position:absolute;left:50%;top:46%;width:180px;height:180px;margin:-90px 0 0 -90px;border-radius:50%;background:radial-gradient(circle,rgba(255,150,90,0.0) 38%,rgba(53,140,255,0.35) 52%,rgba(53,184,255,0.0) 70%)"></div>
+          <div style="position:absolute;left:50%;top:46%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;border:1px dashed rgba(169,163,255,0.3)"></div>
+          <div style="position:absolute;left:50%;top:46%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#FFB27A;box-shadow:0 0 20px rgba(255,140,80,0.7)"></div>
+          <span style="position:absolute;left:20px;right:20px;bottom:18px;font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3;line-height:1.5">Schematic only: droplet, visible hot-flame zone, and the wider region of low-temperature reactions. Drop insight visualization here.</span>
+        </div>
+      </article>
+      </sc-if>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ icatChips }}" as="c" hint-placeholder-count="7">
+            <button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:{{ c.bg }};border:1px solid {{ c.border }};color:{{ c.color }};font-size:13.5px;cursor:pointer;transition:all .25s"><span style="width:6px;height:6px;border-radius:50%;background:{{ c.dot }}"></span>{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <span style="font-family:'Geist Mono',monospace;font-size:11px;color:#6B7390;letter-spacing:0.1em;margin-right:6px">EVIDENCE</span>
+          <sc-for list="{{ statusChips }}" as="c" hint-placeholder-count="4">
+            <button onClick="{{ c.onClick }}" style="padding:7px 12px;border-radius:10px;background:{{ c.bg }};border:1px solid {{ c.border }};color:{{ c.color }};font-family:'Geist Mono',monospace;font-size:11.5px;cursor:pointer">{{ c.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ dataLoading }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:18px">
+          <sc-for list="{{ skeletons }}" as="k" hint-placeholder-count="6">
+            <div style="border-radius:22px;overflow:hidden;background:rgba(10,16,32,0.5);border:1px solid rgba(160,176,255,0.1)">
+              <div data-skel="1" style="height:110px;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.03) 0 1px,transparent 1px 10px),#070b18"></div>
+              <div style="padding:22px;display:flex;flex-direction:column;gap:12px"><div data-skel="1" style="width:40%;height:10px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:85%;height:18px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:100%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:90%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div><div data-skel="1" style="width:60%;height:11px;border-radius:6px;background:rgba(255,255,255,0.07)"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasInsights }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:18px">
+          <sc-for list="{{ insights }}" as="i" hint-placeholder-count="6">
+            <article style="display:flex;flex-direction:column;border-radius:22px;overflow:hidden;background:rgba(10,16,32,0.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(160,176,255,0.12);transition:transform .4s cubic-bezier(.2,.7,.2,1),border-color .4s" style-hover="transform:translateY(-4px);border-color:rgba(255,255,255,0.22)">
+              <div style="position:relative;height:110px;background:repeating-linear-gradient(135deg,rgba(255,255,255,0.03) 0 1px,transparent 1px 10px),#070b18;border-bottom:1px solid rgba(255,255,255,0.06)">
+                <div style="position:absolute;inset:0;background:{{ i.glow }}"></div>
+                <span style="position:absolute;left:16px;bottom:12px;right:16px;font-family:'Geist Mono',monospace;font-size:10.5px;color:#7E88A3">[ viz: {{ i.viz }} ]</span>
+              </div>
+              <div style="padding:22px;display:flex;flex-direction:column;gap:12px;flex:1">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                  <span style="padding:4px 10px;border-radius:999px;background:{{ i.statusBg }};color:{{ i.statusColor }};font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:0.06em">{{ i.status }}</span>
+                  <span style="font-family:'Geist Mono',monospace;font-size:11px;color:{{ i.catColor }}">{{ i.catName }}</span>
+                </div>
+                <h3 style="margin:0;font-size:19px;font-weight:500;letter-spacing:-0.02em;line-height:1.3;text-wrap:balance">{{ i.title }}</h3>
+                <p style="margin:0;font-size:14.5px;line-height:1.6;color:#929BB2;text-wrap:pretty">{{ i.text }}</p>
+                <div style="margin-top:auto;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:10px">
+                  <sc-if value="{{ i.hasRef }}" hint-placeholder-val="{{ true }}">
+                    <a href="{{ i.refHref }}" target="_blank" rel="noopener" style="font-size:12.5px;line-height:1.5;color:#C7CCE0" style-hover="color:#35B8FF"><span style="font-family:'Geist Mono',monospace;font-size:10.5px;color:#6B7390">SOURCE&nbsp;&nbsp;</span>{{ i.refLabel }} ↗</a>
+                  </sc-if>
+                  <sc-if value="{{ i.noRef }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size:12.5px;line-height:1.5;color:#7E88A3"><span style="font-family:'Geist Mono',monospace;font-size:10.5px;color:#6B7390">SOURCE&nbsp;&nbsp;</span>No direct citation — not a verified finding</span>
+                  </sc-if>
+                  <sc-if value="{{ i.hasExp }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ i.openExp }}" style="align-self:flex-start;padding:6px 11px;border-radius:999px;background:rgba(255,113,56,0.08);border:1px solid rgba(255,113,56,0.28);color:#FF9461;font-family:'Geist Mono',monospace;font-size:11px;cursor:pointer">Related · {{ i.expCode }} →</button>
+                  </sc-if>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noInsights }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:60px 24px;border-radius:24px;border:1px dashed rgba(160,176,255,0.2);text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
+          <h3 style="margin:0;font-size:20px;font-weight:500">No insights for this combination</h3>
+          <button onClick="{{ clearInsightFilters }}" style="padding:10px 18px;border-radius:999px;background:#F5F7FF;color:#0A1020;border:none;font-size:14px;cursor:pointer">Show all insights</button>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+</sc-if>
+
+<footer style="position:relative;margin-top:80px;padding:70px 24px 36px;border-top:1px solid rgba(160,176,255,0.1);background:linear-gradient(180deg,rgba(5,7,17,0.2),rgba(5,7,17,0.92) 40%)">
+  <div style="max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:56px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:36px">
+      <div style="grid-column:span 2;min-width:0;display:flex;flex-direction:column;gap:16px;max-width:340px">
+        <a href="#/" style="display:flex;align-items:center;gap:10px">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12.5" stroke="rgba(245,247,255,0.28)"></circle><ellipse cx="14" cy="14" rx="12.5" ry="4.2" transform="rotate(-28 14 14)" stroke="#6C63FF"></ellipse><circle cx="14" cy="14" r="7" stroke="#35B8FF" opacity="0.55"></circle><circle cx="14" cy="14" r="3.6" fill="#FF7138"></circle></svg>
+          <span style="font-size:18px;font-weight:500;letter-spacing:-0.02em">FlameLens</span>
+        </a>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:#929BB2">Advancing our understanding of fire behavior and spacecraft safety through scientific research and AI.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">NAVIGATE</span>
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4"><a href="{{ n.href }}" style="font-size:14px;color:#C7CCE0">{{ n.label }}</a></sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">CATEGORIES</span>
+        <sc-for list="{{ footCats }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="padding:0;text-align:left;background:none;border:none;font-size:14px;color:#C7CCE0;cursor:pointer" style-hover="color:#35B8FF">{{ c.label }}</button></sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">EXPERIMENTS</span>
+        <sc-for list="{{ exps }}" as="e" hint-placeholder-count="6"><button onClick="{{ e.open }}" style="padding:0;text-align:left;background:none;border:none;font-size:14px;color:#C7CCE0;cursor:pointer" style-hover="color:#35B8FF">{{ e.code }}</button></sc-for>
+        <sc-if value="{{ noExps }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#6B7390">—</span></sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">SOURCES</span>
+        <a href="https://www.nasa.gov/glenn/" target="_blank" rel="noopener" style="font-size:14px;color:#C7CCE0">NASA Glenn ↗</a>
+        <a href="https://ntrs.nasa.gov/" target="_blank" rel="noopener" style="font-size:14px;color:#C7CCE0">NASA NTRS ↗</a>
+        <a href="https://www.combustioninstitute.org/" target="_blank" rel="noopener" style="font-size:14px;color:#C7CCE0">Combustion Institute ↗</a>
+        <a href="https://scholar.google.com/" target="_blank" rel="noopener" style="font-size:14px;color:#C7CCE0">Google Scholar ↗</a>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:24px;border-top:1px solid rgba(255,255,255,0.06);font-size:12.5px;color:#6B7390">
+      <span>© 2026 FlameLens. Research summaries for education; not affiliated with NASA.</span>
+      <span style="font-family:'Geist Mono',monospace">Earth orbit · ~400 km</span>
+    </div>
+  </div>
+</footer>
+</main>
+
+<sc-if value="{{ showModal }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closeExp }}" style="position:fixed;inset:0;z-index:100;background:rgba(3,5,12,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px">
+    <div ref="{{ modalRef }}" role="dialog" aria-modal="true" aria-label="{{ m.name }}" onClick="{{ stop }}" style="position:relative;width:100%;max-width:960px;max-height:90vh;overflow:auto;border-radius:28px;background:rgba(9,13,28,0.96);border:1px solid rgba(160,176,255,0.16);box-shadow:0 40px 120px -30px rgba(0,0,0,0.8)">
+      <div style="position:relative;height:clamp(180px,30vw,280px);background:repeating-linear-gradient(135deg,rgba(255,255,255,0.035) 0 1px,transparent 1px 11px),#070b18;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <div style="position:absolute;inset:0;background:{{ m.glow }}"></div>
+        <span style="position:absolute;left:24px;bottom:18px;right:120px;font-family:'Geist Mono',monospace;font-size:11px;color:#7E88A3">[ image: {{ m.image }} ]</span>
+        <button onClick="{{ closeExp }}" aria-label="Close" style="position:absolute;top:16px;right:16px;width:42px;height:42px;border-radius:50%;background:rgba(5,7,17,0.7);border:1px solid rgba(255,255,255,0.14);color:#F5F7FF;cursor:pointer;display:flex;align-items:center;justify-content:center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.8;stroke-linecap:round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+        </button>
+      </div>
+      <div style="padding:clamp(24px,4vw,44px);display:flex;flex-direction:column;gap:30px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Geist Mono',monospace;font-size:11.5px;letter-spacing:0.12em;color:{{ m.hue }}">{{ m.index }} · {{ m.period }}</span>
+          <h2 style="margin:0;font-size:clamp(40px,5vw,64px);font-weight:500;letter-spacing:-0.045em;line-height:1">{{ m.code }}</h2>
+          <span style="font-size:18px;color:#C7CCE0">{{ m.name }}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:1px;border-radius:16px;overflow:hidden;background:rgba(160,176,255,0.1);border:1px solid rgba(160,176,255,0.1)">
+          <sc-for list="{{ m.facts }}" as="f" hint-placeholder-count="3">
+            <div style="padding:16px 18px;background:#0A1020;display:flex;flex-direction:column;gap:6px"><span style="font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:0.12em;color:#6B7390">{{ f.k }}</span><span style="font-size:14px;line-height:1.45;color:#F5F7FF">{{ f.v }}</span></div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:30px">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">SCIENTIFIC OBJECTIVE</span>
+            <p style="margin:0;font-size:18px;line-height:1.55;color:#F5F7FF;text-wrap:pretty">{{ m.objective }}</p>
+            <p style="margin:0;font-size:15px;line-height:1.7;color:#A9B0C6;text-wrap:pretty">{{ m.detail }}</p>
+            <sc-if value="{{ m.hasNote }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;padding:12px 14px;border-radius:12px;background:rgba(255,113,56,0.08);border:1px solid rgba(255,113,56,0.22);font-size:13px;line-height:1.55;color:#FFB892">{{ m.note }}</p>
+            </sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">RESEARCH QUESTIONS</span>
+            <sc-for list="{{ m.questions }}" as="qq" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:#C7CCE0"><span style="flex-shrink:0;margin-top:8px;width:5px;height:5px;border-radius:50%;background:{{ m.hue }}"></span>{{ qq }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ m.hasPapers }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#6B7390">RELATED PAPERS IN THE LIBRARY</span>
+            <sc-for list="{{ m.papers }}" as="p" hint-placeholder-count="2">
+              <a href="{{ p.href }}" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:#F5F7FF" style-hover="border-color:rgba(53,184,255,0.4);color:#F5F7FF">
+                <span style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14.5px;line-height:1.4">{{ p.title }}</span><span style="font-size:12.5px;color:#7E88A3">{{ p.authorsShort }} · {{ p.year }} · {{ p.venue }}</span></span><span style="color:#35B8FF">↗</span>
+              </a>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:20px;border-top:1px solid rgba(255,255,255,0.07)">
+          <a href="{{ m.ntrs }}" target="_blank" rel="noopener" style="padding:11px 18px;border-radius:999px;background:#F5F7FF;color:#0A1020;font-size:14px;font-weight:500" style-hover="color:#0A1020;background:#fff">Search NASA Technical Reports ↗</a>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ prevExp }}" style="padding:10px 16px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.14);color:#F5F7FF;font-size:13px;cursor:pointer">← {{ m.prevCode }}</button>
+            <button onClick="{{ nextExp }}" style="padding:10px 16px;border-radius:999px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.14);color:#F5F7FF;font-size:13px;cursor:pointer">{{ m.nextCode }} →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroMotion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Cinematic&quot;,&quot;Calm&quot;,&quot;Still&quot;],&quot;default&quot;:&quot;Cinematic&quot;,&quot;tsType&quot;:&quot;'Cinematic'|'Calm'|'Still'&quot;,&quot;section&quot;:&quot;3D scene&quot;},&quot;showEarth&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;3D scene&quot;},&quot;showHud&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;3D scene&quot;}}">
+class Component extends DCLogic {
+  CATS = [
+    { id: 'micro', name: 'Microgravity Combustion', color: '#8C85FF' },
+    { id: 'flame', name: 'Flame Behavior', color: '#FF8A57' },
+    { id: 'supp', name: 'Fire Suppression', color: '#35B8FF' },
+    { id: 'mat', name: 'Material Flammability', color: '#E9B26B' },
+    { id: 'craft', name: 'Spacecraft Safety', color: '#7FD6C2' },
+    { id: 'oxy', name: 'Oxygen & Atmosphere', color: '#C3A8FF' },
+  ];
+  // Populated at runtime from the data source (Supabase). Expected shapes:
+  // paper      {id,title,authors,year,venue,cat,exp,keywords[],abstract,url,featured?}
+  // experiment {id,code,name,hue,platformShort,platform,period,center,objective,desc,detail,questions[],note?,image}
+  // insight    {id,featured?,title,status:'est'|'hyp'|'ai',cat,ref,exp,viz,text}
+  PAPERS = []; EXPS = []; INSIGHTS = [];
+  STATUS = {
+    est: { label: 'ESTABLISHED', color: '#35B8FF', bg: 'rgba(53,184,255,0.12)', desc: 'Published, peer-reviewed result. Linked to a traceable source.' },
+    hyp: { label: 'HYPOTHESIS', color: '#FF9461', bg: 'rgba(255,113,56,0.12)', desc: 'Open research question motivating current work. Not yet settled.' },
+    ai: { label: 'AI INTERPRETATION', color: '#A9A3FF', bg: 'rgba(108,99,255,0.16)', desc: 'Synthesis generated by FlameLens. Not a scientific claim.' },
+  };
+
+  state = { page: 'home', scrollY: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1280, menuOpen: false,
+    q: '', cat: 'all', year: 'all', sort: 'relevance', loading: false, visible: 6, focus: false,
+    exp: null, icat: 'all', istatus: 'all', countT: 0, dataLoading: true };
+
+  canvasRef = React.createRef(); mainRef = React.createRef(); searchRef = React.createRef(); scrollDotRef = React.createRef(); modalRef = React.createRef();
+
+  componentDidMount() {
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.onHash = () => this.route();
+    this.onScroll = () => { const y = window.scrollY; if ((y > 30) !== (this.state.scrollY > 30)) this.setState({ scrollY: y }); else this.state.scrollY = y; };
+    this.onResize = () => { this.setState({ w: window.innerWidth }); this.layoutScene && this.layoutScene(); };
+    this.onKey = (e) => {
+      if (e.key === 'Escape') { if (this.state.exp) this.closeExp(); else if (this.state.menuOpen) this.setState({ menuOpen: false }); }
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT') { e.preventDefault(); this.openSearch(); }
+    };
+    this.onMouse = (e) => { this.mx = e.clientX / window.innerWidth - 0.5; this.my = e.clientY / window.innerHeight - 0.5; };
+    window.addEventListener('hashchange', this.onHash);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.onKey);
+    window.addEventListener('mousemove', this.onMouse, { passive: true });
+    this.route(true);
+    this.loadData();
+    let tries = 0;
+    const wait = () => {
+      const cv = this.canvasRef.current || document.querySelector('canvas[data-fl-scene]');
+      if (window.THREE && cv && !this.renderer) { try { this.initScene(cv); } catch (e) { console.error('FlameLens scene init failed:', e && e.message, e); } }
+      else if (!this.renderer && tries++ < 150) this.waitT = setTimeout(wait, 100);
+    };
+    wait();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('hashchange', this.onHash); window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('mousemove', this.onMouse);
+    cancelAnimationFrame(this.raf); clearTimeout(this.waitT); clearTimeout(this.loadT);
+    if (this.renderer) this.renderer.dispose();
+    this.ro && this.ro.disconnect(); this.onVis && document.removeEventListener('visibilitychange', this.onVis);
+    this.io && this.io.disconnect();
+  }
+  componentDidUpdate() {
+    const prev = this._prev || { page: this.state.page, exp: null }; this._prev = { page: this.state.page, exp: this.state.exp };
+    this.shimmer();
+    if (prev.page !== this.state.page) this.afterPage();
+    if (!prev.exp && this.state.exp) { document.body.style.overflow = 'hidden'; }
+    if (prev.exp && !this.state.exp) { document.body.style.overflow = ''; }
+    if (prev.exp !== this.state.exp && this.state.exp && this.modalRef.current) {
+      this.modalRef.current.scrollTop = 0;
+      if (!this.reduced) this.modalRef.current.animate([{ opacity: 0, transform: 'translateY(16px) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    }
+  }
+
+  async loadData() {
+    this.setState({ dataLoading: true });
+    try {
+      // Wire to Supabase: window.FLAMELENS_DATA_SOURCE = async () => ({ papers, experiments, insights })
+      const src = window.FLAMELENS_DATA_SOURCE;
+      const d = src ? await src() : await new Promise(r => setTimeout(() => r({}), 1400));
+      this.PAPERS = d.papers || []; this.EXPS = d.experiments || []; this.INSIGHTS = d.insights || [];
+    } catch (e) { console.error('FlameLens: data load failed', e); }
+    this.setState({ dataLoading: false }, () => { if (this.state.page === 'home') this.runCount(); });
+  }
+  shimmer() {
+    const root = this.mainRef.current; if (!root || this.reduced) return;
+    root.querySelectorAll('[data-skel]').forEach(el => { if (el.__sk) return; el.__sk = 1;
+      el.animate([{ opacity: 0.4 }, { opacity: 1 }, { opacity: 0.4 }], { duration: 1600, iterations: Infinity, easing: 'ease-in-out', delay: Math.random() * 300 }); });
+  }
+  route(initial) {
+    const h = (location.hash || '').replace(/^#\/?/, '');
+    const [seg, sub] = h.split('/');
+    const page = ['library', 'experiments', 'insights'].includes(seg) ? seg : (seg === '' || seg === undefined ? 'home' : null);
+    if (!page) return; // in-page anchors like #stats
+    const next = { page, menuOpen: false };
+    if (seg === 'experiments' && sub && this.EXPS.find(e => e.id === sub)) next.exp = sub;
+    if (page !== this.state.page || initial) window.scrollTo(0, 0);
+    this.setState(next, () => { if (initial) this.afterPage(); });
+  }
+  afterPage() {
+    const main = this.mainRef.current;
+    if (main && !this.reduced) main.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 550, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    if (this.state.page === 'home') this.runCount();
+    this.shimmer();
+    const dot = this.scrollDotRef.current;
+    if (dot && !this.reduced) dot.animate([{ transform: 'translateY(-12px)' }, { transform: 'translateY(40px)' }], { duration: 1800, iterations: Infinity, easing: 'cubic-bezier(.6,0,.4,1)' });
+    this.io && this.io.disconnect();
+    if (this.reduced || !main || !window.IntersectionObserver) return;
+    this.io = new IntersectionObserver((entries) => entries.forEach(en => {
+      if (en.isIntersecting) { en.target.animate([{ opacity: 0, transform: 'translateY(22px)' }, { opacity: 1, transform: 'none' }], { duration: 800, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' }); this.io.unobserve(en.target); }
+    }), { threshold: 0.12 });
+    main.querySelectorAll('[data-reveal]').forEach(el => { const r = el.getBoundingClientRect(); if (r.top > window.innerHeight * 0.9) this.io.observe(el); });
+  }
+  runCount() {
+    if (this.reduced) { this.setState({ countT: 1 }); return; }
+    const t0 = performance.now() + 300;
+    const step = (t) => { const k = Math.min(1, Math.max(0, (t - t0) / 1600)); this.setState({ countT: k }); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+
+  go = (h) => { location.hash = h; };
+  openSearch = () => {
+    if (this.state.page !== 'library') this.go('#/library');
+    setTimeout(() => this.searchRef.current && this.searchRef.current.focus(), 120);
+  };
+  setFilter(patch) {
+    clearTimeout(this.loadT);
+    this.setState({ ...patch, loading: true, visible: 6 });
+    this.loadT = setTimeout(() => this.setState({ loading: false }), 320);
+  }
+  openExp = (id) => this.setState({ exp: id, menuOpen: false });
+  closeExp = () => { this.setState({ exp: null }); if (/^#\/experiments\//.test(location.hash)) history.replaceState(null, '', '#/experiments'); };
+  catOf(id) { return this.CATS.find(c => c.id === id); }
+  expOf(id) { return this.EXPS.find(e => e.id === id); }
+  scholar(p) { if (p.url) return p.url; return 'https://scholar.google.com/scholar?q=' + encodeURIComponent('"' + p.title + '"'); }
+  shortAuthors(a) { a = a || ''; const parts = a.split(','); return parts.length > 2 ? parts[0].trim() + ' et al.' : a; }
+  paperVM = (p) => { const c = this.catOf(p.cat) || { name: p.cat || '—', color: '#929BB2' }; const e = p.exp && this.expOf(p.exp);
+    return { ...p, catName: c.name, catColor: c.color, href: this.scholar(p), authorsShort: this.shortAuthors(p.authors), tags: (p.keywords || []).slice(0, 3),
+      hasExp: !!e, expCode: e ? e.code + ' →' : '', openExp: () => e && this.openExp(e.id) }; };
+  refLabel(p) { return this.shortAuthors(p.authors).replace(' et al.', ' et al.') + ' (' + p.year + ') · ' + p.venue; }
+
+  filtered() {
+    const { q, cat, year, sort } = this.state;
+    const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+    let list = this.PAPERS.map(p => {
+      let score = 0;
+      if (terms.length) {
+        const t = (p.title || '').toLowerCase(), k = (p.keywords || []).join(' ').toLowerCase();
+        const rest = (p.abstract + ' ' + p.authors + ' ' + p.venue + ' ' + ((this.catOf(p.cat) || {}).name || '') + ' ' + (p.exp || '')).toLowerCase();
+        for (const term of terms) { let m = 0; if (t.includes(term)) m += 3; if (k.includes(term)) m += 2; if (rest.includes(term)) m += 1; if (!m) return null; score += m; }
+      }
+      return { p, score };
+    }).filter(Boolean);
+    const base = list;
+    if (cat !== 'all') list = list.filter(x => x.p.cat === cat);
+    if (year !== 'all') list = list.filter(x => String(x.p.year) === year);
+    list.sort(sort === 'newest' ? (a, b) => b.p.year - a.p.year : (a, b) => (b.score - a.score) || (b.p.year - a.p.year));
+    return { list: list.map(x => x.p), base: base.map(x => x.p) };
+  }
+
+  initScene(cv) {
+    const T = window.THREE; if (!cv) return;
+    let r;
+    try { r = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, powerPreference: 'high-performance' }); } catch (e) { console.warn('FlameLens: WebGL unavailable, using fallback background'); return; }
+    this.renderer = r;
+    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    r.setSize(window.innerWidth, window.innerHeight, false);
+    r.setClearColor(0x000000, 0);
+    const scene = new T.Scene();
+    const cam = new T.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+    cam.position.set(0, 0, 9);
+    const mob = window.innerWidth < 880;
+    const U = { uTime: { value: 0 }, uAlpha: { value: 1 }, uPR: { value: r.getPixelRatio() } };
+
+    // stars
+    const N = mob ? 1600 : 3200, sp = new Float32Array(N * 3), sc = new Float32Array(N * 3), ss = new Float32Array(N), sph = new Float32Array(N);
+    for (let i = 0; i < N; i++) {
+      const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, rr = 70 + Math.random() * 90, s = Math.sqrt(1 - u * u);
+      sp.set([rr * s * Math.cos(th), rr * u, rr * s * Math.sin(th) - 20], i * 3);
+      const tint = Math.random(); const c = tint < 0.15 ? [1, 0.82, 0.68] : tint < 0.45 ? [0.72, 0.8, 1] : [1, 1, 1];
+      sc.set(c, i * 3); ss[i] = Math.pow(Math.random(), 3) * 3.2 + 0.6; sph[i] = Math.random() * 6.28;
+    }
+    const sg = new T.BufferGeometry();
+    sg.setAttribute('position', new T.BufferAttribute(sp, 3)); sg.setAttribute('aColor', new T.BufferAttribute(sc, 3));
+    sg.setAttribute('size', new T.BufferAttribute(ss, 1)); sg.setAttribute('phase', new T.BufferAttribute(sph, 1));
+    const stars = new T.Points(sg, new T.ShaderMaterial({ uniforms: { uTime: U.uTime, uPR: U.uPR }, transparent: true, depthWrite: false, blending: T.AdditiveBlending,
+      vertexShader: 'attribute vec3 aColor;attribute float size;attribute float phase;uniform float uTime;uniform float uPR;varying vec3 vC;varying float vA;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_Position=projectionMatrix*mv;float tw=0.6+0.4*sin(uTime*(0.6+fract(phase)*1.4)+phase*3.0);vA=tw;vC=aColor;gl_PointSize=size*uPR*(0.75+0.25*tw);}',
+      fragmentShader: 'varying vec3 vC;varying float vA;void main(){float d=length(gl_PointCoord-0.5);float a=smoothstep(0.5,0.0,d);a*=a;gl_FragColor=vec4(vC,a*vA);}' }));
+    scene.add(stars);
+
+    const cloudTex = (blobs, soft) => {
+      const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+      for (let i = 0; i < blobs; i++) {
+        const x = 128 + (Math.random() - 0.5) * 120 * soft, y = 128 + (Math.random() - 0.5) * 120 * soft, rad = 30 + Math.random() * 70;
+        const gr = g.createRadialGradient(x, y, 0, x, y, rad); gr.addColorStop(0, 'rgba(255,255,255,' + (0.5 / Math.sqrt(blobs)) + ')'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+      }
+      const t = new T.CanvasTexture(c); return t;
+    };
+    const glowTex = cloudTex(1, 0);
+    const neb = [[0x6C63FF, -55, 22, -120, 150, 0.22], [0x35B8FF, 60, -6, -140, 160, 0.12], [0xFF7138, 35, 34, -160, 120, 0.08], [0x4B3FD1, -70, -38, -130, 150, 0.16], [0x2a5fd0, 10, 50, -150, 170, 0.08]];
+    neb.forEach(([col, x, y, z, s, o]) => {
+      const m = new T.Sprite(new T.SpriteMaterial({ map: cloudTex(24, 1), color: col, transparent: true, opacity: o, blending: T.AdditiveBlending, depthWrite: false }));
+      m.position.set(x, y, z); m.scale.set(s, s * 0.7, 1); m.material.rotation = Math.random() * 6; scene.add(m);
+    });
+
+    // Earth — photoreal, NASA Blue Marble textures via three-globe
+    const TX = 'https://unpkg.com/three-globe/example/img/';
+    const loader = new T.TextureLoader(); loader.setCrossOrigin('anonymous');
+    const TEXW = mob ? 1024 : 2048;
+    const tex = (n) => { const c = document.createElement('canvas'); c.width = TEXW; c.height = TEXW / 2; const t = new T.CanvasTexture(c);
+      const img = new Image(); img.crossOrigin = 'anonymous';
+      img.onload = () => { try { c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); t.needsUpdate = true; } catch (e) { console.warn('FlameLens: texture draw failed', n, e); } };
+      img.onerror = () => console.warn('FlameLens: texture failed', n); img.src = TX + n; return t; };
+    const sunDir = new T.Vector3(-0.95, 0.28, 0.42).normalize();
+    const earthG = new T.Group(); scene.add(earthG);
+    const seg = mob ? 72 : 128;
+    const sphVS = 'varying vec2 vUv;varying vec3 vWN;varying vec3 vWE;varying vec3 vWNo;varying vec3 vWP;void main(){vUv=uv;vec3 n=normalize(normal);vec3 e=normalize(cross(vec3(0.0,1.0,0.0),n)+vec3(0.00001));vec3 no=cross(n,e);mat3 m=mat3(modelMatrix);vWN=normalize(m*n);vWE=normalize(m*e);vWNo=normalize(m*no);vec4 wp=modelMatrix*vec4(position,1.0);vWP=wp.xyz;gl_Position=projectionMatrix*viewMatrix*wp;}';
+    const earthMat = new T.ShaderMaterial({ transparent: true,
+      uniforms: { uDay: { value: tex('earth-blue-marble.jpg') }, uNight: { value: tex('earth-night.jpg') }, uSpec: { value: tex('earth-water.png') }, uBump: { value: tex('earth-topology.png') }, uSun: { value: sunDir }, uAlpha: U.uAlpha },
+      vertexShader: sphVS,
+      fragmentShader: 'uniform sampler2D uDay;uniform sampler2D uNight;uniform sampler2D uSpec;uniform sampler2D uBump;uniform vec3 uSun;uniform float uAlpha;varying vec2 vUv;varying vec3 vWN;varying vec3 vWE;varying vec3 vWNo;varying vec3 vWP;void main(){vec3 n=normalize(vWN);float h=texture2D(uBump,vUv).r;float hu=texture2D(uBump,vUv+vec2(0.0006,0.0)).r;float hv=texture2D(uBump,vUv+vec2(0.0,0.0012)).r;vec3 pn=normalize(n-(normalize(vWE)*(hu-h)+normalize(vWNo)*(hv-h))*5.0);vec3 vd=normalize(cameraPosition-vWP);float dn=dot(n,uSun);float diff=max(dot(pn,uSun),0.0);float term=smoothstep(-0.12,0.3,dn);vec3 day=texture2D(uDay,vUv).rgb;vec3 col=day*(0.035+1.3*diff*term);float water=texture2D(uSpec,vUv).r;float sp=pow(max(dot(reflect(-uSun,n),vd),0.0),30.0)*water;col+=vec3(0.75,0.85,1.0)*sp*0.65*term;vec3 nc=pow(texture2D(uNight,vUv).rgb,vec3(1.35))*vec3(1.0,0.72,0.42)*1.7;col+=nc*smoothstep(0.08,-0.3,dn);float fr=pow(1.0-max(dot(n,vd),0.0),3.0);col=mix(col,vec3(0.35,0.62,1.0)*(0.15+0.85*term),fr*0.6);gl_FragColor=vec4(col,uAlpha);}' });
+    const earth = new T.Mesh(new T.SphereGeometry(1, seg, seg), earthMat); earthG.add(earth);
+    const cloudMat = new T.ShaderMaterial({ transparent: true, depthWrite: false,
+      uniforms: { uMap: { value: null }, uSun: { value: sunDir }, uAlpha: { value: 0.4 } }, vertexShader: sphVS,
+      fragmentShader: 'uniform sampler2D uMap;uniform vec3 uSun;uniform float uAlpha;varying vec2 vUv;varying vec3 vWN;varying vec3 vWE;varying vec3 vWNo;varying vec3 vWP;void main(){vec4 c=texture2D(uMap,vUv);float a=max(c.a<0.99?c.a:c.r,0.0);float l=0.05+0.95*smoothstep(-0.15,0.35,dot(normalize(vWN),uSun));gl_FragColor=vec4(vec3(1.0)*l,a*uAlpha);}' });
+    const clouds = new T.Mesh(new T.SphereGeometry(1.012, seg, seg), cloudMat); clouds.visible = false; earthG.add(clouds);
+    const cloudSrcs = [TX + 'earth-clouds.png', 'https://unpkg.com/globe.gl/example/clouds/clouds.png'];
+    const tryCloud = (i) => { if (i >= cloudSrcs.length) { console.warn('FlameLens: no cloud texture available'); return; }
+      loader.load(cloudSrcs[i], (t) => { cloudMat.uniforms.uMap.value = t; clouds.visible = true; }, undefined, () => tryCloud(i + 1)); };
+    tryCloud(0);
+    const fresVS = 'varying vec3 vN;varying vec3 vV;varying vec3 vWN;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);vWN=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*mv;}';
+    const rim = new T.Mesh(new T.SphereGeometry(1.02, 96, 96), new T.ShaderMaterial({ transparent: true, depthWrite: false, blending: T.AdditiveBlending, uniforms: { uAlpha: U.uAlpha, uSun: { value: sunDir } },
+      vertexShader: fresVS, fragmentShader: 'uniform float uAlpha;uniform vec3 uSun;varying vec3 vN;varying vec3 vV;varying vec3 vWN;void main(){float f=pow(1.0-max(dot(vN,vV),0.0),3.2);float day=0.35+0.65*smoothstep(-0.35,0.5,dot(normalize(vWN),uSun));gl_FragColor=vec4(vec3(0.32,0.62,1.0)*f*1.3*day*uAlpha,1.0);}' }));
+    earthG.add(rim);
+    const halo = new T.Mesh(new T.SphereGeometry(1.16, 96, 96), new T.ShaderMaterial({ side: T.BackSide, transparent: true, depthWrite: false, blending: T.AdditiveBlending, uniforms: { uAlpha: U.uAlpha },
+      vertexShader: fresVS, fragmentShader: 'uniform float uAlpha;varying vec3 vN;varying vec3 vV;void main(){float f=pow(smoothstep(0.0,0.55,dot(-vN,vV)),2.2);gl_FragColor=vec4(vec3(0.25,0.55,1.0)*f*0.9*uAlpha,1.0);}' }));
+    earthG.add(halo);
+    const ll = (lat, lon, r) => { const ph = (90 - lat) * Math.PI / 180, th = (lon + 180) * Math.PI / 180; return new T.Vector3(-r * Math.sin(ph) * Math.cos(th), r * Math.cos(ph), r * Math.sin(ph) * Math.sin(th)); };
+    const dotMat = (c, o) => new T.SpriteMaterial({ map: glowTex, color: c, transparent: true, opacity: o, blending: T.AdditiveBlending, depthWrite: false, depthTest: true });
+    const markers = [];
+    // Apollo 1 fire — Launch Complex 34, Cape Canaveral (28.52°N, 80.56°W), 1967
+    const lc34 = new T.Group(); lc34.position.copy(ll(28.52, -80.56, 1.004)); earth.add(lc34);
+    const lcCore = new T.Sprite(dotMat(0xffb070, 1)); lcCore.scale.set(0.045, 0.045, 1); lc34.add(lcCore);
+    const lcPulse = new T.Sprite(dotMat(0xff5a2a, 0.8)); lcPulse.scale.set(0.12, 0.12, 1); lc34.add(lcPulse);
+    markers.push(lcCore, lcPulse);
+    const ringPts = (R, n = 256) => { const a = []; for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; a.push(new T.Vector3(Math.cos(t) * R, 0, Math.sin(t) * R)); } return new T.BufferGeometry().setFromPoints(a); };
+    const INC = 51.6 * Math.PI / 180;
+    const mkOrbit = (R, raan, col, op, speed, phase) => {
+      const pivot = new T.Group(); pivot.rotation.y = raan; earthG.add(pivot);
+      const tilt = new T.Group(); tilt.rotation.x = INC; pivot.add(tilt);
+      const mat = new T.LineBasicMaterial({ color: col, transparent: true, opacity: op, depthWrite: false });
+      tilt.add(new T.LineLoop(ringPts(R), mat));
+      const core = new T.Sprite(dotMat(0xffd2a8, 1)); core.scale.set(0.035, 0.035, 1); tilt.add(core);
+      const glow = new T.Sprite(dotMat(col, 0.85)); glow.scale.set(0.1, 0.1, 1); tilt.add(glow);
+      return { mat, op, core, glow, R, speed, phase };
+    };
+    // ISS & Mir: both 51.6° inclination (Mir cabin fire, Feb 1997). Radii exaggerated for legibility.
+    const orbits = [mkOrbit(1.1, 0.4, 0xff7138, 0.38, 0.22, 0), mkOrbit(1.17, -0.9, 0xff4a3a, 0.24, 0.17, 2.2)];
+    const earthTick = (t, dt, a) => {
+      earth.rotation.y += dt * 0.025; clouds.rotation.y += dt * 0.034;
+      cloudMat.uniforms.uAlpha.value = 0.4 * a;
+      const p = 0.5 + 0.5 * Math.sin(t * 2.4);
+      lcCore.material.opacity = a; lcPulse.material.opacity = (0.35 + 0.5 * p) * a; lcPulse.scale.setScalar(0.09 + 0.07 * p);
+      orbits.forEach(o => { o.mat.opacity = o.op * a; const ang = t * o.speed + o.phase; o.core.position.set(Math.cos(ang) * o.R, 0, Math.sin(ang) * o.R); o.glow.position.copy(o.core.position);
+        o.core.material.opacity = a; o.glow.material.opacity = 0.85 * a; });
+    };
+    earth.rotation.y = -0.35; clouds.rotation.y = -0.35;
+
+    // Flame
+    const flameG = new T.Group(); scene.add(flameG);
+    const FN = mob ? 1400 : 2600, fd = new Float32Array(FN * 3), fr = new Float32Array(FN), fp = new Float32Array(FN), fk = new Float32Array(FN);
+    for (let i = 0; i < FN; i++) {
+      const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+      fd.set([s * Math.cos(th), u, s * Math.sin(th)], i * 3);
+      const core = Math.random() < 0.22; fk[i] = core ? 1 : 0;
+      const g = (Math.random() + Math.random() + Math.random() - 1.5) * 0.06;
+      fr[i] = core ? 0.42 + Math.random() * 0.22 : 1.0 + g; fp[i] = Math.random();
+    }
+    const fg = new T.BufferGeometry();
+    fg.setAttribute('position', new T.BufferAttribute(new Float32Array(FN * 3), 3));
+    fg.setAttribute('dir', new T.BufferAttribute(fd, 3)); fg.setAttribute('rad', new T.BufferAttribute(fr, 1));
+    fg.setAttribute('ph', new T.BufferAttribute(fp, 1)); fg.setAttribute('kind', new T.BufferAttribute(fk, 1));
+    fg.boundingSphere = new T.Sphere(new T.Vector3(), 3);
+    const flame = new T.Points(fg, new T.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: T.AdditiveBlending,
+      vertexShader: 'attribute vec3 dir;attribute float rad;attribute float ph;attribute float kind;uniform float uTime;uniform float uPR;uniform float uAlpha;varying vec3 vC;varying float vA;void main(){float br=1.0+0.035*sin(uTime*0.9+ph*6.28)+0.018*sin(uTime*2.1+ph*31.0)+0.03*sin(uTime*0.7+dir.y*3.0+dir.x*2.0);vec3 p=dir*rad*br;vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;float flick=0.65+0.35*sin(uTime*(2.0+ph*3.0)+ph*40.0);vec3 blue=vec3(0.15,0.42,1.0);vec3 vio=vec3(0.45,0.32,1.0);vec3 org=vec3(1.0,0.45,0.16);vec3 yel=vec3(1.0,0.76,0.42);vC=kind<0.5?mix(blue,vio,fract(ph*7.0)):mix(org,yel,fract(ph*5.0));float rim=kind<0.5?0.6:0.9;vA=flick*uAlpha*rim;gl_PointSize=(kind<0.5?3.4:4.2)*uPR*(9.0/-mv.z)*(0.55+0.9*fract(ph*13.0));}',
+      fragmentShader: 'varying vec3 vC;varying float vA;void main(){float d=length(gl_PointCoord-0.5);float a=smoothstep(0.5,0.0,d);gl_FragColor=vec4(vC,a*a*vA);}' }));
+    flameG.add(flame);
+    const SN = mob ? 160 : 320, sd = new Float32Array(SN * 3), sphs = new Float32Array(SN), spd = new Float32Array(SN);
+    for (let i = 0; i < SN; i++) { const u = Math.random() * 2 - 1, th = Math.random() * 6.28, s = Math.sqrt(1 - u * u); sd.set([s * Math.cos(th), u, s * Math.sin(th)], i * 3); sphs[i] = Math.random(); spd[i] = 0.04 + Math.random() * 0.08; }
+    const sgeo = new T.BufferGeometry();
+    sgeo.setAttribute('position', new T.BufferAttribute(new Float32Array(SN * 3), 3));
+    sgeo.setAttribute('dir', new T.BufferAttribute(sd, 3)); sgeo.setAttribute('ph', new T.BufferAttribute(sphs, 1)); sgeo.setAttribute('spd', new T.BufferAttribute(spd, 1));
+    sgeo.boundingSphere = new T.Sphere(new T.Vector3(), 4);
+    flameG.add(new T.Points(sgeo, new T.ShaderMaterial({ uniforms: U, transparent: true, depthWrite: false, blending: T.AdditiveBlending,
+      vertexShader: 'attribute vec3 dir;attribute float ph;attribute float spd;uniform float uTime;uniform float uPR;uniform float uAlpha;varying float vA;varying vec3 vC;void main(){float life=fract(uTime*spd+ph);vec3 p=dir*(1.0+life*1.8);vec4 mv=modelViewMatrix*vec4(p,1.);gl_Position=projectionMatrix*mv;vA=life*(1.0-life)*3.2*uAlpha;vC=mix(vec3(1.0,0.55,0.25),vec3(0.45,0.6,1.0),life);gl_PointSize=2.2*uPR*(9.0/-mv.z);}',
+      fragmentShader: 'varying float vA;varying vec3 vC;void main(){float d=length(gl_PointCoord-0.5);float a=smoothstep(0.5,0.0,d);gl_FragColor=vec4(vC,a*vA*0.6);}' })));
+    const mkGlow = (col, s, o) => { const m = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color: col, transparent: true, opacity: o, blending: T.AdditiveBlending, depthWrite: false })); m.scale.set(s, s, 1); m.userData.o = o; flameG.add(m); return m; };
+    const glows = [mkGlow(0x3d6dff, 5.6, 0.5), mkGlow(0x6C63FF, 3.2, 0.4), mkGlow(0xff7a3d, 1.7, 0.75), mkGlow(0xfff1e0, 0.4, 1.0)];
+    const rings = [];
+    const mkRing = (R, rx, rz, col, o) => { const m = new T.LineLoop(ringPts(R), new T.LineBasicMaterial({ color: col, transparent: true, opacity: o, depthWrite: false })); m.rotation.set(rx, 0, rz); m.userData.o = o; flameG.add(m);
+      const d = new T.Sprite(new T.SpriteMaterial({ map: glowTex, color: col, transparent: true, blending: T.AdditiveBlending, depthWrite: false })); d.scale.set(0.12, 0.12, 1); m.add(d); m.userData.dot = d; m.userData.R = R; rings.push(m); };
+    mkRing(1.75, 1.2, 0.35, 0x8c85ff, 0.28); mkRing(2.35, 1.38, -0.5, 0x35b8ff, 0.16);
+
+    this.layoutScene = () => {
+      const w = cv.clientWidth || window.innerWidth, h = cv.clientHeight || window.innerHeight; if (!w || !h) return false;
+      r.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); this._sz = w + 'x' + h;
+      const m = w < 880;
+      const visH = 2 * 9 * Math.tan(22.5 * Math.PI / 180), visW = visH * (w / h);
+      this.earthBase = m ? { x: 0, y: -visH * 0.34, s: Math.min(visH * 0.3, visW * 0.46) } : { x: Math.min(visW * 0.21, visW / 2 - visH * 0.4), y: 0, s: visH * 0.37 };
+      const eb = this.earthBase;
+      this.flameBase = m ? { x: visW * 0.3, y: visH * 0.08, s: 0.28 } : { x: eb.x - eb.s * 1.3, y: -eb.s * 0.82, s: 0.34 };
+    };
+    this.layoutScene();
+    if (window.ResizeObserver) { this.ro = new ResizeObserver(() => this.layoutScene()); this.ro.observe(cv); }
+    this.onVis = () => this.layoutScene(); document.addEventListener('visibilitychange', this.onVis);
+    earthG.rotation.z = 0.12;
+    const clock = new T.Clock(); let t = 0, heroA = 1, cx = 0, cy = 0;
+    const loop = () => {
+      this.raf = requestAnimationFrame(loop);
+      if (this._sz !== cv.clientWidth + 'x' + cv.clientHeight || !this.earthBase) { if (this.layoutScene() === false || !this.earthBase) return; }
+      const mode = this.props.heroMotion || 'Cinematic';
+      const k = this.reduced || mode === 'Still' ? 0 : mode === 'Calm' ? 0.4 : 1;
+      const dt = Math.min(clock.getDelta(), 0.05) * (k === 0 ? 0.08 : k); t += dt; U.uTime.value = t;
+      const sy = window.scrollY || 0, vh = window.innerHeight;
+      const target = this.state.page === 'home' ? Math.max(0, 1 - sy / (vh * 0.95)) : 0;
+      heroA += (target - heroA) * 0.06; U.uAlpha.value = heroA;
+      const showEarth = this.props.showEarth !== false;
+      earthG.visible = heroA > 0.01 && showEarth; flameG.visible = heroA > 0.01;
+      glows.forEach(g => g.material.opacity = g.userData.o * heroA * (0.9 + 0.1 * Math.sin(t * 2.3)));
+      rings.forEach((g, i) => { g.material.opacity = g.userData.o * heroA; const a = t * (0.35 - i * 0.12); g.userData.dot.position.set(Math.cos(a) * g.userData.R, 0, Math.sin(a) * g.userData.R); g.userData.dot.material.opacity = heroA; });
+      earthTick(t, dt, heroA);
+      const fb = this.flameBase, eb = this.earthBase;
+      flameG.position.set(fb.x, fb.y + sy * 0.0032, 0); flameG.scale.setScalar(fb.s);
+      flameG.rotation.y += dt * 0.12; flameG.rotation.x = Math.sin(t * 0.2) * 0.08;
+      earthG.position.set(eb.x, eb.y + sy * 0.0018, 0); earthG.scale.setScalar(eb.s);
+      stars.rotation.y += dt * 0.004; stars.rotation.x = -sy * 0.00004;
+      const px = k ? (this.mx || 0) * 0.5 : 0, py = k ? (this.my || 0) * 0.3 : 0;
+      cx += (px - cx) * 0.04; cy += (py - cy) * 0.04;
+      cam.position.set(cx, -cy, 9); cam.lookAt(0, 0, 0);
+      r.render(scene, cam);
+    };
+    loop();
+  }
+
+  renderVals() {
+    const s = this.state, mob = s.w < 880, dl = s.dataLoading;
+    const fmt = (n) => (dl || !n) ? '—' : Math.round(n * ease);
+    const pages = [['home', 'Home', '#/'], ['library', 'Research Library', '#/library'], ['experiments', 'Experiments', '#/experiments'], ['insights', 'Insights', '#/insights']];
+    const navItems = pages.map(([id, label, href], i) => { const a = s.page === id;
+      return { label, href, num: '0' + (i + 1), aria: a ? 'page' : undefined, color: a ? '#F5F7FF' : '#A3AAC0', bg: a ? 'rgba(108,99,255,0.22)' : 'transparent', shadow: a ? 'inset 0 0 0 1px rgba(140,133,255,0.35)' : 'none' }; });
+    const ease = 1 - Math.pow(1 - s.countT, 3);
+    const est = this.INSIGHTS.filter(i => i.status === 'est').length;
+    const stats = [
+      { code: 'PAPERS', label: 'Research papers', value: fmt(this.PAPERS.length), note: 'Peer-reviewed papers and reference texts', color: '#6C63FF' },
+      { code: 'PROGRAMS', label: 'Space experiments', value: fmt(this.EXPS.length), note: 'NASA fire research programs in orbit', color: '#FF7138' },
+      { code: 'FINDINGS', label: 'Established findings', value: fmt(est), note: 'Each linked to a traceable source', color: '#35B8FF' },
+      { code: 'CATEGORIES', label: 'Research categories', value: fmt(new Set(this.PAPERS.map(p => p.cat)).size), note: 'From microgravity combustion to atmosphere', color: '#C3A8FF' },
+    ];
+    const pv = this.paperVM;
+    const fp = this.PAPERS.filter(p => p.featured).concat(this.PAPERS.filter(p => !p.featured)).slice(0, 3).map(pv);
+    const featMain = fp[0] || {}, featRest = fp.slice(1);
+
+    const { list, base } = this.filtered();
+    const results = list.slice(0, s.visible).map(pv);
+    const catChips = [{ id: 'all', name: 'All categories', color: '#F5F7FF' }, ...this.CATS].map(c => { const a = s.cat === c.id;
+      return { label: c.name, count: dl || !this.PAPERS.length ? '—' : (c.id === 'all' ? base.length : base.filter(p => p.cat === c.id).length), dot: c.color, bg: a ? 'rgba(255,255,255,0.1)' : 'rgba(10,16,32,0.5)', border: a ? 'rgba(255,255,255,0.35)' : 'rgba(160,176,255,0.12)', color: a ? '#F5F7FF' : '#A3AAC0', onClick: () => this.setFilter({ cat: c.id }) }; });
+    const years = [...new Set(this.PAPERS.map(p => p.year))].sort((a, b) => b - a);
+    const yearOpts = [{ v: 'all', label: 'All years' }, ...years.map(y => ({ v: String(y), label: String(y) }))];
+    const sortOpts = [['relevance', 'Relevance'], ['newest', 'Newest']].map(([v, label]) => ({ label, bg: s.sort === v ? 'rgba(108,99,255,0.3)' : 'transparent', color: s.sort === v ? '#F5F7FF' : '#929BB2', onClick: () => this.setFilter({ sort: v }) }));
+    const hasFilters = s.q !== '' || s.cat !== 'all' || s.year !== 'all' || s.sort !== 'relevance';
+
+    const statusChips = [['all', 'ALL'], ['est', 'ESTABLISHED'], ['hyp', 'HYPOTHESIS'], ['ai', 'AI INTERPRETATION']].map(([v, label]) => { const a = s.istatus === v; const st = this.STATUS[v];
+      return { label, bg: a ? (st ? st.bg : 'rgba(255,255,255,0.1)') : 'transparent', border: a ? (st ? st.color : 'rgba(255,255,255,0.35)') : 'rgba(160,176,255,0.14)', color: a ? (st ? st.color : '#F5F7FF') : '#929BB2', onClick: () => this.setState({ istatus: v }) }; });
+    const icatChips = [{ id: 'all', name: 'All topics', color: '#F5F7FF' }, ...this.CATS].map(c => { const a = s.icat === c.id;
+      return { label: c.name, dot: c.color, bg: a ? 'rgba(255,255,255,0.1)' : 'rgba(10,16,32,0.5)', border: a ? 'rgba(255,255,255,0.35)' : 'rgba(160,176,255,0.12)', color: a ? '#F5F7FF' : '#A3AAC0', onClick: () => this.setState({ icat: c.id }) }; });
+    const insVM = (i) => { const c = this.catOf(i.cat) || { name: i.cat || '—', color: '#929BB2' }, st = this.STATUS[i.status] || this.STATUS.hyp, p = i.ref && this.PAPERS.find(x => x.id === i.ref), e = i.exp && this.expOf(i.exp);
+      return { ...i, catName: c.name, catColor: c.color, status: st.label, statusColor: st.color, statusBg: st.bg, hasRef: !!p, noRef: !p, refLabel: p ? this.refLabel(p) : '', refHref: p ? this.scholar(p) : '#',
+        hasExp: !!e, expCode: e ? e.code : '', openExp: () => e && this.openExp(e.id), glow: 'radial-gradient(ellipse 60% 120% at 75% 50%,' + c.color + '33,transparent 70%)' }; };
+    const fi = this.INSIGHTS.find(i => i.featured) || this.INSIGHTS[0];
+    const insights = this.INSIGHTS.filter(i => i !== fi && (s.icat === 'all' || i.cat === s.icat) && (s.istatus === 'all' || i.status === s.istatus)).map(insVM);
+    const feat = fi ? insVM(fi) : {};
+    const legend = ['est', 'hyp', 'ai'].map(k => this.STATUS[k]);
+
+    const exps = this.EXPS.map((e, i) => ({ ...e, index: 'EXP · ' + String(i + 1).padStart(2, '0'), open: () => this.openExp(e.id), glow: 'radial-gradient(circle at 68% 42%,' + e.hue + '40,transparent 55%),radial-gradient(circle at 30% 80%,rgba(108,99,255,0.12),transparent 50%)' }));
+    let m = {}; const mi = this.EXPS.findIndex(e => e.id === s.exp);
+    if (mi >= 0) { const n = this.EXPS.length, e = exps[mi], prev = this.EXPS[(mi + n - 1) % n], next = this.EXPS[(mi + 1) % n];
+      const papers = this.PAPERS.filter(p => p.exp === e.id).map(pv);
+      m = { ...e, facts: [{ k: 'PLATFORM', v: e.platform }, { k: 'PERIOD', v: e.period }, { k: 'MANAGING CENTER', v: e.center || '—' }],
+        hasNote: !!e.note, papers, questions: e.questions || [], hasPapers: papers.length > 0, prevCode: prev.code, nextCode: next.code,
+        ntrs: 'https://ntrs.nasa.gov/search?q=' + encodeURIComponent(e.name) };
+    }
+    const stepExp = (d) => () => { const i = this.EXPS.findIndex(e => e.id === s.exp); const n = this.EXPS.length; if (n) this.openExp(this.EXPS[(i + d + n) % n].id); };
+
+    return {
+      canvasRef: this.canvasRef, mainRef: this.mainRef, searchRef: this.searchRef, scrollDotRef: this.scrollDotRef, modalRef: this.modalRef,
+      navBg: s.scrollY > 30 || s.page !== 'home' ? 'rgba(8,12,26,0.72)' : 'rgba(8,12,26,0.28)',
+      navBorder: s.scrollY > 30 ? 'rgba(160,176,255,0.16)' : 'rgba(160,176,255,0.09)',
+      navItems, isMobile: mob, notMobile: !mob, menuOpen: s.menuOpen, menuClosed: !s.menuOpen, showMobileMenu: mob && s.menuOpen,
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }), openSearch: this.openSearch,
+      isHome: s.page === 'home', isLibrary: s.page === 'library', isExperiments: s.page === 'experiments', isInsights: s.page === 'insights',
+      showHud: !mob && this.props.showHud !== false,
+      scrollToStats: (e) => { e.preventDefault(); const el = document.getElementById('stats'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90, behavior: this.reduced ? 'auto' : 'smooth' }); },
+      stats, featMain, featRest, featCols: mob ? 'minmax(0,1fr)' : 'minmax(0,1.35fr) minmax(0,1fr)',
+      paperCount: dl || !this.PAPERS.length ? '—' : this.PAPERS.length,
+      expCountLabel: dl || !this.EXPS.length ? '—' : this.EXPS.length,
+      dataLoading: dl, reload: () => this.loadData(),
+      hasFeat: !dl && fp.length > 0, featEmpty: !dl && fp.length === 0,
+      hasExps: !dl && this.EXPS.length > 0, expsEmpty: !dl && this.EXPS.length === 0, noExps: this.EXPS.length === 0,
+      hasFeatIns: !dl && !!fi, insNoData: !dl && this.INSIGHTS.length === 0, q: s.q, hasQ: s.q !== '',
+      onQ: (e) => this.setFilter({ q: e.target.value }), clearQ: () => this.setFilter({ q: '' }),
+      onFocus: () => this.setState({ focus: true }), onBlur: () => this.setState({ focus: false }),
+      searchBorder: s.focus ? 'rgba(108,99,255,0.6)' : 'rgba(160,176,255,0.16)', searchShadow: s.focus ? '0 0 0 4px rgba(108,99,255,0.15),0 20px 60px -30px rgba(108,99,255,0.7)' : 'none',
+      catChips, year: s.year, yearOpts, onYear: (e) => this.setFilter({ year: e.target.value }), sortOpts, hasFilters,
+      clearFilters: () => this.setFilter({ q: '', cat: 'all', year: 'all', sort: 'relevance' }),
+      resultLabel: dl ? 'Loading library…' : !this.PAPERS.length ? '— papers' : s.loading ? 'Searching…' : (list.length ? 'Showing ' + Math.min(s.visible, list.length) + ' of ' + list.length + ' papers' : '0 results'),
+      loading: s.loading || dl, skeletons: [1, 2, 3, 4, 5, 6], showResults: !s.loading && !dl && list.length > 0, isEmpty: !s.loading && !dl && list.length === 0 && this.PAPERS.length > 0, libNoData: !dl && this.PAPERS.length === 0,
+      results, hasMore: !s.loading && list.length > s.visible, remaining: list.length - s.visible, loadMore: () => this.setState({ visible: s.visible + 6 }),
+      exps, legend, feat, icatChips, statusChips, insights, hasInsights: !dl && insights.length > 0, noInsights: !dl && insights.length === 0 && this.INSIGHTS.length > 1,
+      clearInsightFilters: () => this.setState({ icat: 'all', istatus: 'all' }),
+      footCats: this.CATS.map(c => ({ label: c.name, onClick: () => { this.setFilter({ cat: c.id, q: '', year: 'all' }); this.go('#/library'); } })),
+      showModal: !!s.exp, m, closeExp: this.closeExp, stop: (e) => e.stopPropagation(), prevExp: stepExp(-1), nextExp: stepExp(1),
+    };
+  }
+}
+</script>
+</body>
+</html>

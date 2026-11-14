@@ -1,0 +1,146 @@
+'use client';
+// npm install three @types/three
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+
+const TX = 'https://unpkg.com/three-globe/example/img/';
+
+type Props = { className?: string; offsetX?: number; reducedMotion?: boolean };
+
+// lat/lon (deg) → point on a unit sphere, matching three's SphereGeometry UVs
+const latLon = (lat: number, lon: number, r = 1) => {
+  const phi = THREE.MathUtils.degToRad(90 - lat), theta = THREE.MathUtils.degToRad(lon + 180);
+  return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
+};
+
+const glowTexture = () => {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d')!; const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.25, 'rgba(255,255,255,0.5)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+};
+
+export default function Earth3D({ className, offsetX = 0.21, reducedMotion }: Props) {
+  const ref = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = ref.current; if (!canvas) return;
+    const reduce = reducedMotion ?? window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let renderer: THREE.WebGLRenderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch { return; } // CSS fallback stays visible
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100); camera.position.set(0, 0, 9);
+    const loader = new THREE.TextureLoader(); loader.setCrossOrigin('anonymous');
+    const tex = (n: string) => loader.load(TX + n);
+
+    // Sun
+    const sunDir = new THREE.Vector3(-0.95, 0.28, 0.42).normalize();
+    scene.add(new THREE.AmbientLight(0x334466, 0.35));
+    const sun = new THREE.DirectionalLight(0xfff4e6, 1.4); sun.position.copy(sunDir).multiplyScalar(50); scene.add(sun);
+
+    const earthG = new THREE.Group(); earthG.rotation.z = 0.12; scene.add(earthG);
+
+    // Earth: blue marble + bump relief + ocean specular (water mask)
+    const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 128), new THREE.MeshPhongMaterial({
+      map: tex('earth-blue-marble.jpg'), bumpMap: tex('earth-topology.png'), bumpScale: 0.035,
+      specularMap: tex('earth-water.png'), specular: new THREE.Color(0x3a5a7a), shininess: 22,
+    }));
+    earth.rotation.y = -0.35; earthG.add(earth);
+
+    // Night lights, only on the dark hemisphere
+    const night = new THREE.Mesh(new THREE.SphereGeometry(1.0015, 128, 128), new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: { uMap: { value: tex('earth-night.jpg') }, uSun: { value: sunDir } },
+      vertexShader: `varying vec2 vUv; varying vec3 vWN;
+        void main(){ vUv=uv; vWN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: `uniform sampler2D uMap; uniform vec3 uSun; varying vec2 vUv; varying vec3 vWN;
+        void main(){ float n=smoothstep(0.08,-0.3,dot(normalize(vWN),uSun));
+          vec3 c=pow(texture2D(uMap,vUv).rgb,vec3(1.35))*vec3(1.,.72,.42)*1.7; gl_FragColor=vec4(c*n,1.); }`,
+    }));
+    earth.add(night);
+
+    // Clouds: 0.4 opacity, rotates slightly faster
+    const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.012, 128, 128),
+      new THREE.MeshPhongMaterial({ map: tex('earth-clouds.png'), transparent: true, opacity: 0.4, depthWrite: false }));
+    clouds.rotation.y = -0.35; earthG.add(clouds);
+
+    // Atmosphere: blue at the edges, transparent in the middle
+    const atmVS = `varying vec3 vN; varying vec3 vV;
+      void main(){ vec4 mv=modelViewMatrix*vec4(position,1.); vN=normalize(normalMatrix*normal); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }`;
+    earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.02, 96, 96), new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexShader: atmVS,
+      fragmentShader: `varying vec3 vN; varying vec3 vV;
+        void main(){ float f=pow(1.-max(dot(vN,vV),0.),3.2); gl_FragColor=vec4(vec3(.32,.62,1.)*f*1.2,1.); }`,
+    })));
+    earthG.add(new THREE.Mesh(new THREE.SphereGeometry(1.16, 96, 96), new THREE.ShaderMaterial({
+      side: THREE.BackSide, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, vertexShader: atmVS,
+      fragmentShader: `varying vec3 vN; varying vec3 vV;
+        void main(){ float f=pow(smoothstep(0.,.55,dot(-vN,vV)),2.2); gl_FragColor=vec4(vec3(.25,.55,1.)*f*.9,1.); }`,
+    })));
+
+    // Fire-incident markers
+    const glow = glowTexture();
+    const sprite = (color: number, size: number, opacity = 1) => {
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glow, color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false }));
+      s.scale.set(size, size, 1); return s;
+    };
+    // Apollo 1 fire — Launch Complex 34, Cape Canaveral (28.52°N, 80.56°W), 1967
+    const lc34 = new THREE.Group(); lc34.position.copy(latLon(28.52, -80.56, 1.004)); earth.add(lc34);
+    const lcCore = sprite(0xffb070, 0.045), lcPulse = sprite(0xff5a2a, 0.12, 0.8); lc34.add(lcCore, lcPulse);
+
+    // ISS and Mir orbits — both 51.6° inclination (Mir cabin fire, Feb 1997). Radii exaggerated for legibility.
+    const INC = THREE.MathUtils.degToRad(51.6);
+    const ring = (R: number) => new THREE.BufferGeometry().setFromPoints(
+      Array.from({ length: 256 }, (_, i) => { const t = (i / 256) * Math.PI * 2; return new THREE.Vector3(Math.cos(t) * R, 0, Math.sin(t) * R); }));
+    const orbits = [
+      { R: 1.1, raan: 0.4, color: 0xff7138, op: 0.38, speed: 0.22, phase: 0 },   // ISS
+      { R: 1.17, raan: -0.9, color: 0xff4a3a, op: 0.24, speed: 0.17, phase: 2.2 }, // Mir
+    ].map(o => {
+      const pivot = new THREE.Group(); pivot.rotation.y = o.raan; earthG.add(pivot);
+      const tilt = new THREE.Group(); tilt.rotation.x = INC; pivot.add(tilt);
+      tilt.add(new THREE.LineLoop(ring(o.R), new THREE.LineBasicMaterial({ color: o.color, transparent: true, opacity: o.op, depthWrite: false })));
+      const core = sprite(0xffd2a8, 0.035), halo = sprite(o.color, 0.1, 0.85); tilt.add(core, halo);
+      return { ...o, core, halo };
+    });
+
+    // Layout: full viewport height, offset right (centered on mobile)
+    const resize = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      const visH = 2 * 9 * Math.tan(THREE.MathUtils.degToRad(22.5)), visW = visH * (w / h);
+      if (w < 880) { earthG.position.set(0, -visH * 0.34, 0); earthG.scale.setScalar(Math.min(visH * 0.3, visW * 0.46)); }
+      else { earthG.position.set(Math.min(visW * offsetX, visW / 2 - visH * 0.4), 0, 0); earthG.scale.setScalar(visH * 0.37); }
+    };
+    resize(); window.addEventListener('resize', resize);
+    const ro = new ResizeObserver(resize); ro.observe(canvas);
+
+    const clock = new THREE.Clock(); let t = 0, raf = 0;
+    const loop = () => {
+      raf = requestAnimationFrame(loop);
+      const dt = Math.min(clock.getDelta(), 0.05) * (reduce ? 0.1 : 1); t += dt;
+      earth.rotation.y += dt * 0.025; clouds.rotation.y += dt * 0.034;
+      const p = 0.5 + 0.5 * Math.sin(t * 2.4);
+      lcPulse.material.opacity = 0.35 + 0.5 * p; lcPulse.scale.setScalar(0.09 + 0.07 * p);
+      orbits.forEach(o => { const a = t * o.speed + o.phase; o.core.position.set(Math.cos(a) * o.R, 0, Math.sin(a) * o.R); o.halo.position.copy(o.core.position); });
+      renderer.render(scene, camera);
+    };
+    loop();
+
+    return () => {
+      cancelAnimationFrame(raf); window.removeEventListener('resize', resize); ro.disconnect();
+      scene.traverse(o => { const m = o as THREE.Mesh; m.geometry?.dispose(); const mat = m.material as THREE.Material | undefined; mat?.dispose(); });
+      renderer.dispose();
+    };
+  }, [offsetX, reducedMotion]);
+
+  return <canvas ref={ref} className={className} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' }} aria-hidden="true" />;
+}
+
+/* Usage — hero section, full viewport height:
+<section className="relative h-screen overflow-hidden">
+  <Earth3D />
+  <div className="relative z-10 max-w-[1240px] mx-auto px-6 h-full flex items-center">…hero text (left)…</div>
+</section>
+*/
