@@ -139,3 +139,8 @@ tr:last-child td { border-bottom: none; }
 .progress-fill.paused { opacity: .55; }
 .btn.ghost { background: transparent; color: var(--soft); border-color: rgba(255,255,255,.28); }
 .btn.ghost:hover { color: var(--text); border-color: var(--text); }
+
+/* featured card */
+.feature-card { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; max-width: 640px; margin-top: 16px; padding: 22px 24px; border-radius: 18px; border: 1px solid rgba(255, 184, 77, .55); background: linear-gradient(135deg, rgba(255, 113, 56, .18), rgba(255, 184, 77, .08)); box-shadow: 0 0 36px rgba(255, 113, 56, .15); }
+.feature-btn { padding: 12px 20px; border-radius: 999px; background: linear-gradient(90deg, #ff7138, #ffb84d); color: #1a0d05 !important; font-weight: 500; font-size: 14px; white-space: nowrap; transition: box-shadow .25s; }
+.feature-btn:hover { box-shadow: 0 0 28px rgba(255, 150, 60, .6); }

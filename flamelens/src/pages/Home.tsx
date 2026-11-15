@@ -47,6 +47,13 @@ export default function Home() {
             <div className="muted">Materials tested</div>
           </div>
         </div>
+        <section className="feature-card">
+          <div>
+            <h2 style={{ margin: '0 0 6px', fontSize: 24, fontWeight: 500 }}>🔥 See a Cool Flame</h2>
+            <p style={{ margin: 0, color: '#ffe2b0', lineHeight: 1.55 }}>NASA’s FLEX experiment discovered flames that burn invisibly. Watch it happen.</p>
+          </div>
+          <Link to="/cool-flame" className="feature-btn">Watch the Animation →</Link>
+        </section>
         <p className="mono muted" style={{ fontSize: 12, marginTop: 28, maxWidth: 420, borderLeft: '1px solid var(--line)', paddingLeft: 14 }}>
           FIG. 01 — Earth from orbit. The orange ring is the ISS orbit at 51.6° inclination. Orbit altitude exaggerated.
         </p>
