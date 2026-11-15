@@ -29,7 +29,7 @@ export default function Home() {
           Exploring combustion behavior, fire dynamics, and spacecraft safety through NASA research, experimental data, and artificial intelligence.
         </p>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', margin: '28px 0 8px' }}>
-          <Link to="/library" className="btn primary">Explore Research →</Link>
+          <Link to="/research" className="btn primary">Explore Research →</Link>
           <Link to="/experiments" className="btn">Discover Experiments</Link>
         </div>
         <ConfigNotice />

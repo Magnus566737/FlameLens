@@ -39,8 +39,7 @@ export default function Experiments() {
           const st = e.status ?? 'unknown'
           return (
             <article key={e.id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                <span className="tag">{e.id}</span>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 10 }}>
                 <span className={`badge ${st === 'complete' || st === 'active' ? st : 'other'}`}>{st}</span>
               </div>
               <h3 style={{ margin: '0 0 2px', fontSize: 22, fontWeight: 500 }}>{e.acronym}</h3>

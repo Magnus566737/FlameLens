@@ -1,13 +1,14 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { hasKey } from '../lib/supabase'
 
-const items = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/library', label: 'Research Library' },
-  { to: '/experiments', label: 'Experiments' },
-  { to: '/materials', label: 'Materials' },
-  { to: '/moon-gap', label: 'Moon Base Gap' },
-  { to: '/ask', label: 'Ask FlameLens' },
+type Leaf = { to: string; label: string }
+type Group = { label: string; items: Leaf[] }
+
+const GROUPS: Group[] = [
+  { label: 'Explore', items: [{ to: '/experiments', label: 'Investigations' }, { to: '/incidents', label: 'Incidents Timeline' }] },
+  { label: 'Safety', items: [{ to: '/risk-calculator', label: 'Fire Risk Calculator' }, { to: '/materials', label: 'Materials' }, { to: '/missions', label: 'Mission Scenarios' }] },
+  { label: 'Research', items: [{ to: '/research', label: 'Research Library' }, { to: '/cool-flame', label: 'Cool Flame' }, { to: '/gravity-gap', label: 'Gravity Gap' }] },
 ]
 
 export function ConfigNotice() {
@@ -20,7 +21,51 @@ export function ConfigNotice() {
   )
 }
 
+function Dropdown({ g, onNavigate }: { g: Group; onNavigate?: () => void }) {
+  const { pathname } = useLocation()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const active = g.items.some((i) => pathname.startsWith(i.to))
+
+  // Click/tap outside closes; so does Escape.
+  useEffect(() => {
+    if (!open) return
+    const outside = (e: Event) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('pointerdown', outside)
+    document.addEventListener('keydown', esc)
+    return () => { document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', esc) }
+  }, [open])
+
+  return (
+    <div className="dd" ref={ref}>
+      <button className={`dd-btn ${active ? 'active' : ''}`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        {g.label} <span aria-hidden style={{ fontSize: 10 }}>{open ? '▴' : '▾'}</span>
+      </button>
+      {open && (
+        <div className="dd-menu" role="menu">
+          {g.items.map((i) => (
+            <Link key={i.to} to={i.to} role="menuitem" onClick={() => { setOpen(false); onNavigate?.() }}>{i.label}</Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Layout() {
+  const { pathname } = useLocation()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => setMobileOpen(false), [pathname])
+  useEffect(() => {
+    if (!mobileOpen) return
+    const outside = (e: Event) => { if (mobileRef.current && !mobileRef.current.contains(e.target as Node)) setMobileOpen(false) }
+    document.addEventListener('pointerdown', outside)
+    return () => document.removeEventListener('pointerdown', outside)
+  }, [mobileOpen])
+
   return (
     <>
       <div className="bg-fixed" />
@@ -37,20 +82,25 @@ export default function Layout() {
             FlameLens
           </NavLink>
           <div className="links">
-            {items.map((i) => (
-              <NavLink key={i.to} to={i.to} end={i.end} className={({ isActive }) => (isActive ? 'active' : '')}>
-                {i.label}
-              </NavLink>
-            ))}
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>Home</NavLink>
+            {GROUPS.map((g) => <Dropdown key={g.label} g={g} />)}
+            <NavLink to="/ask" className={({ isActive }) => (isActive ? 'active' : '')}>Ask FlameLens</NavLink>
+            <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>About</NavLink>
           </div>
-          <NavLink to="/library" className="cta">Explore Research →</NavLink>
+          <NavLink to="/research" className="cta">Explore Research →</NavLink>
+          <div className="mobile-menu" ref={mobileRef}>
+            <button className="menu-btn" aria-label="Menu" aria-expanded={mobileOpen} onClick={() => setMobileOpen((o) => !o)}>{mobileOpen ? '✕' : '☰'}</button>
+            {mobileOpen && (
+              <div className="mobile-panel">
+                <NavLink to="/" end>Home</NavLink>
+                {GROUPS.map((g) => <Dropdown key={g.label} g={g} onNavigate={() => setMobileOpen(false)} />)}
+                <NavLink to="/ask">Ask FlameLens</NavLink>
+                <NavLink to="/about">About</NavLink>
+              </div>
+            )}
+          </div>
         </nav>
       </header>
-      <div className="mobile-links">
-        {items.map((i) => (
-          <NavLink key={i.to} to={i.to} end={i.end}>{i.label}</NavLink>
-        ))}
-      </div>
       <Outlet />
     </>
   )
