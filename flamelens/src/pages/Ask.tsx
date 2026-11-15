@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ConfigNotice } from '../components/Layout'
 import MaterialsTable from '../components/MaterialsTable'
 import MoonGapChart from '../components/MoonGapChart'
@@ -74,6 +74,50 @@ function summarize(papers: Scored[], terms: string[]) {
     .slice(0, 3)
 }
 
+const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY as string | undefined
+const GROQ_MODEL = 'qwen/qwen3.8-27b'
+const LOG = '[FlameLens]'
+// Never logs the key itself, only whether it was found.
+console.info(`${LOG} VITE_GROQ_API_KEY ${GROQ_KEY ? `loaded (${GROQ_KEY.length} chars)` : 'NOT FOUND: restart the dev server after editing .env.local'}`)
+
+/** Ask the model (via Groq) to answer from the retrieved abstracts only. Throws on any failure so the caller can fall back. */
+async function askGroq(question: string, papers: Scored[]): Promise<string> {
+  if (!GROQ_KEY) throw new Error('VITE_GROQ_API_KEY is not set')
+  const abstracts = papers
+    .map((p, i) => `Paper ${i + 1} [${p.ntrs_id}]: "${p.title}" (${p.year ?? 'n.d.'})\n${(p.abstract ?? '').slice(0, 1500)}`)
+    .join('\n\n')
+  const prompt = [
+    'You are FlameLens, a NASA space fire safety super intelligence.',
+    `Based ONLY on these NASA paper abstracts, answer: ${question}`,
+    `Abstracts:\n${abstracts}`,
+    'Be specific, cite which paper supports each point (use the paper ID, e.g. [20150023456]).',
+    'Keep answer under 150 words.',
+    'Do not use asterisks, bold, or any markdown formatting. Plain text only.',
+    'Format your answer as 3-4 short bullet points, each starting with a dash (-). Keep each point under 2 sentences.',
+  ].join('\n')
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 20000)
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${GROQ_KEY}` },
+      body: JSON.stringify({ model: GROQ_MODEL, messages: [{ role: 'user', content: prompt }], max_tokens: 300 }),
+      signal: ctrl.signal,
+    })
+    const raw = await res.text()
+    console.info(`${LOG} Groq HTTP ${res.status}`, raw.slice(0, 1500))
+    if (!res.ok) throw new Error(`Groq HTTP ${res.status}: ${raw.slice(0, 300)}`)
+    const data = JSON.parse(raw)
+    const content: string | undefined = data?.choices?.[0]?.message?.content
+    // Some reasoning models wrap their thinking in <think> tags; show only the answer.
+    const text = content?.replace(/<think>[\s\S]*?<\/think>/g, '').trim()
+    if (!text) throw new Error(`empty answer (finish_reason: ${data?.choices?.[0]?.finish_reason ?? 'unknown'})`)
+    return text
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 const EXAMPLES = ['which materials are safest on the Moon?', 'what happens to flames at low oxygen?', 'how do cool flames behave in microgravity?', 'smoke detection in spacecraft']
 
 export default function Ask() {
@@ -83,11 +127,15 @@ export default function Ask() {
   const [error, setError] = useState<string | null>(null)
   const [papers, setPapers] = useState<Scored[]>([])
   const [terms, setTerms] = useState<string[]>([])
+  const [ai, setAi] = useState<string | null>(null)
+  const [aiLoading, setAiLoading] = useState(false)
+  const reqId = useRef(0)
 
   async function ask(question: string) {
     const q = question.trim()
     if (!q || !supabase) return
-    setInput(q); setAsked(q); setLoading(true); setError(null)
+    setInput(q); setAsked(q); setLoading(true); setError(null); setAi(null); setAiLoading(false)
+    const id = ++reqId.current
     const t = keywords(q)
     setTerms(t)
     if (t.length === 0) { setPapers([]); setLoading(false); return }
@@ -95,7 +143,16 @@ export default function Ask() {
     const { data, error } = await supabase.from('ntrs_papers').select('ntrs_id,title,abstract,year,pdf_url,related_investigations').or(filter).limit(300)
     setLoading(false)
     if (error) { setError(error.message); setPapers([]); return }
-    setPapers(rank((data ?? []) as Paper[], t))
+    const ranked = rank((data ?? []) as Paper[], t)
+    setPapers(ranked)
+    // Model answer on top of the retrieved papers. Any failure silently keeps the keyword summary.
+    if (ranked.length > 0 && GROQ_KEY) {
+      setAiLoading(true)
+      askGroq(q, ranked)
+        .then((text) => { if (id === reqId.current) setAi(text) })
+        .catch((err) => { console.error(`${LOG} AI answer failed, using keyword fallback:`, err) })
+        .finally(() => { if (id === reqId.current) setAiLoading(false) })
+    }
   }
 
   const lower = asked.toLowerCase()
@@ -108,7 +165,7 @@ export default function Ask() {
     <main className="page">
       <div className="eyebrow">Ask FlameLens</div>
       <h1 className="h1" style={{ fontSize: 'clamp(32px,4.5vw,56px)' }}>Ask about fire in <span className="serif">space</span></h1>
-      <p className="lead">Search 191 NASA papers in plain language. Answers are built from the papers themselves, not generated.</p>
+      <p className="lead">SI-Powered answers from 191 NASA papers using Groq AI.</p>
       <ConfigNotice />
       <form onSubmit={(e) => { e.preventDefault(); ask(input) }} style={{ display: 'flex', gap: 10, maxWidth: 720, margin: '20px 0 12px' }}>
         <input className="input" value={input} onChange={(e) => setInput(e.target.value)} placeholder="e.g. which materials are safest on the Moon?" aria-label="Your question" />
@@ -125,8 +182,18 @@ export default function Ask() {
       {asked && !loading && !error && (
         <>
           <section className="card" style={{ borderColor: 'rgba(108,99,255,.45)', marginBottom: 24 }}>
-            <div className="eyebrow" style={{ color: 'var(--cyan)', marginBottom: 10 }}>Answer</div>
-            {summary.length > 0 ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>
+              <span className="eyebrow" style={{ color: 'var(--cyan)' }}>Answer</span>
+              {ai && <span className="si-badge">✦ Super Intelligence</span>}
+            </div>
+            {aiLoading && <p className="muted" style={{ margin: 0 }}>Reading the papers…</p>}
+            {!aiLoading && ai && (
+              <>
+                <p style={{ margin: 0, color: 'var(--text)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{ai}</p>
+                <p className="muted mono" style={{ fontSize: 11, margin: '14px 0 0' }}>AI-generated from the abstracts of the papers listed under Sources. Check the papers before relying on it.</p>
+              </>
+            )}
+            {!aiLoading && !ai && (summary.length > 0 ? (
               <>
                 <p style={{ margin: '0 0 12px', color: 'var(--soft)', fontSize: 14 }}>
                   Across the {papers.length} closest papers, the most relevant statements are:
@@ -142,12 +209,12 @@ export default function Ask() {
               <p style={{ margin: 0, color: 'var(--soft)' }}>
                 No papers in the library match {terms.length ? <>“{terms.join(', ')}”</> : 'that question'}. Try different or more specific terms, such as a material, an experiment name, or a phenomenon.
               </p>
-            )}
+            ))}
           </section>
 
           {papers.length > 0 && (
             <>
-              <h2 style={{ fontSize: 22, fontWeight: 500, margin: '8px 0 14px' }}>Top {papers.length} matching papers</h2>
+              <h2 style={{ fontSize: 22, fontWeight: 500, margin: '8px 0 14px' }}>{ai ? 'Sources' : `Top ${papers.length} matching papers`}</h2>
               <div className="grid" style={{ marginBottom: 36 }}>
                 {papers.map((p) => (
                   <article key={p.ntrs_id} className="card">
